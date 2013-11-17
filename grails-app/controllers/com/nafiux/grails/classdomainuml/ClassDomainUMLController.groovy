@@ -12,18 +12,18 @@ class ClassDomainUMLController {
             if (!packages[model.getPackageName()]) packages[model.getPackageName()] = []
             packages[model.getPackageName()].add(model)
         }
-        String uml = ""
+        StringBuilder uml = new StringBuilder()
         // Packages
         for (p in packages) {
-            uml += "package " + p.getKey() + " <<Rect>> {\n"
+            uml.append("package ").append(p.getKey()).append(" <<Rect>> {\n")
             // Each model of package
             for(model in p.getValue()) {
                 def c = grailsApplication.classLoader.loadClass("${model.fullName}")
                 def instance = new DefaultGrailsDomainClass(c)
-                uml += "class " + model.getFullName() + " {\n" // Class start
+                uml.append("class ").append(model.getFullName()).append(" {\n") // Class start
                 // Properties
                 instance.getProperties().each {
-                    uml += " " + it.getName() + ": " + it.getType().toString().replaceAll("class ", "") + "\n"
+                    uml.append(" ").append(it.getName()).append(": ").append(it.getType().toString().replaceAll("class ", "")).append("\n")
                 }
                 // Associations
                 instance.getAssociations().each {
@@ -45,35 +45,31 @@ class ClassDomainUMLController {
                     }
                     relations.add(model.getFullName() + ' ' + left + ' ' + type + ' ' + right +' ' + it.getType().name + " : " + it.getName())
                 }
-                uml += "}\n" // Class end
+                uml.append("}\n") // Class end
             }
-            uml += "}\n" // Package end
+            uml.append("}\n") // Package end
         }
         for(r in relations) {
-            uml += r + "\n"
+            uml.append(r).append("\n")
         }
-        
-        uml += """
+
+        uml.append("""
 title ${grailsApplication.metadata.'app.name'} - ${grailsApplication.metadata.'app.version'}
 legend left
   Powered by Nafiux (nafiux.com)
   Grails version: ${grailsApplication.metadata.'app.grails.version'}
 endlegend
-"""
-        
-        render "<img src='http://www.plantuml.com/plantuml/img/${compressAndEncodeString(uml)}' />"
-        
+""")
+
+        render "<img src='http://www.plantuml.com/plantuml/img/${compressAndEncodeString(uml.toString())}' />"
     }
     
     def compressAndEncodeString(String str) {
-        byte[] xmlBytes = str.getBytes("UTF-8");
+        byte[] xmlBytes = str.getBytes("UTF-8")
 
-        com.nafiux.grails.classdomainuml.CompressionZlib compress = new com.nafiux.grails.classdomainuml.CompressionZlib()
-        byte[] compressed = compress.compress(xmlBytes)
+        byte[] compressed = new CompressionZlib().compress(xmlBytes)
 
-        com.nafiux.grails.classdomainuml.AsciiEncoder ascii = new com.nafiux.grails.classdomainuml.AsciiEncoder()
-
-        return ascii.encode(compressed)
+        return new AsciiEncoder().encode(compressed)
     }
 
 }

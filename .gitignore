@@ -1,1 +1,8 @@
 /compilaInstala.sh
+*.log
+/target
+grails-class-domain-uml-*.zip
+grails-class-domain-uml-*.zip.sha1
+plugin.xml
+web-app/WEB-INF
+plugin.xml
