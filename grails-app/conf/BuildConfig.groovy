@@ -6,9 +6,9 @@ grails.project.dependency.resolution = {
     log 'info'
 
     repositories {
-        grailsCentral()
         mavenLocal()
-        // mavenCentral()
+        mavenCentral()
+        grailsCentral()
     }
 
     dependencies {

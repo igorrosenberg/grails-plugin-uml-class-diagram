@@ -1,14 +1,14 @@
-class ClassDomainUMLGrailsPlugin {
-    def version = "0.1.5"
+class ToUmlGrailsPlugin {
+    def version = "0.1"
     def grailsVersion = "2.0 > *"
     def pluginExcludes = [
         "web-app/**"
     ]
 
-    def title = "Class Domain UML Plugin"
-    def author = "Ignacio Ocampo Millan"
-    def authorEmail = "nafiux@gmail.com"
-    def description = 'Automagically create a UML diagram from all your domain classes of your Grails app'
+    def title = "To UML Plugin"
+    def author = "Igor Rosenberg, based on work by Ignacio Ocampo Millan"
+    def authorEmail = "Ignacio <nafiux@gmail.com>"
+    def description = 'Automagically create a UML diagram from Domain, Controller and Service classes'
     def documentation = "http://grails.org/plugin/class-domain-uml"
 
     def license = "APACHE"
