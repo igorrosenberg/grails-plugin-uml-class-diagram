@@ -12,6 +12,7 @@ grails.project.dependency.resolution = {
     }
 
     dependencies {
+       runtime 'net.sourceforge.plantuml:plantuml:8000'
     }
 
     plugins {
