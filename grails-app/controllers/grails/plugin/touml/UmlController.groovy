@@ -5,8 +5,13 @@ class UmlController {
     def umlService
     
     def domain() {
-        def umlString = umlService.domainUml()
-        render "<img src='http://www.plantuml.com/plantuml/img/$umlString' />"
+        def umlURL = umlService.domain()
+        render "<img src='$umlURL' />"
+    }
+
+    def architecture() {
+        def umlURL = umlService.domain()
+        render "<img src='$umlURL' />"
     }
     
     // FIXME add the other method pointing to yUML
