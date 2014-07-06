@@ -22,14 +22,14 @@ Started refactoring previous work - perimeter:
 * (Igor) Refactor script / controller / service (UmlController | UmlService | PlantUmlService |YumlService)
 * (Igor) domains >> list dependencies (hasmany)
 * (Igor) domain >> all fields not external (ie excluding hasmany)
-* domain introspection result to diagram spec
+* (Igor) domain introspection result to diagram spec
 
 ## Future dev tasks  
 * grails introspect 
-** controllers >> list dependencies
-** services >> list dependencies
-** controllers, services >> public methods
-** introspection result to diagram spec
+  * controllers >> list dependencies
+  * services >> list dependencies
+  * controllers, services >> public methods
+  * introspection result to diagram spec
 * plantUml Class diagram spec (write non trivial example)
 * plantUml Dependency diagram spec (write non trivial example)
 * plantUml diagram spec to PNG file
