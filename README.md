@@ -15,25 +15,27 @@ Generate UML diagrams from your Grails app source code.
   1. [TODO] document specifically webapp interfaces (public methods of Controllers, with javadoc, input/output spec?) 
   
 ## Finished dev tasks  
-* None
+* (Igor) Refactor (pass1) script / controller / service (UmlController | UmlService | PlantUmlService |YumlService)
+* (Igor) domain >> all fields not external (ie excluding hasmany)
+* (Igor) domain introspection result to diagram spec
   
 ## Ongoing dev tasks  
 Started refactoring previous work - perimeter: 
-* (Igor) Refactor script / controller / service (UmlController | UmlService | PlantUmlService |YumlService)
+* (Igor) Refactor (pass2) script / controller / service (UmlController | UmlService | PlantUmlService |YumlService)
 * (Igor) domains >> list dependencies (hasmany)
-* (Igor) domain >> all fields not external (ie excluding hasmany)
-* (Igor) domain introspection result to diagram spec
 
 ## Future dev tasks  
+* domain >> filter fields via config parameter (eg: exclude id and version)
 * grails introspect 
   * controllers >> list dependencies
   * services >> list dependencies
   * controllers, services >> public methods
   * introspection result to diagram spec
-* plantUml Class diagram spec (write non trivial example)
-* plantUml Dependency diagram spec (write non trivial example)
+* plantUml Class diagram spec (non trivial example)
+* plantUml Dependency diagram spec (non trivial example)
 * plantUml diagram spec to PNG file
 * plantUml diagram spec to PNG byteStream  
+* Yuml as secondary option
 * script : controller/services/domains >> to PNG files
 * UmlController : html file containing 1 link to 1 generated PNG file
 * UmlController : controller/services/domains >> to html file containing links to generated PNG files
@@ -50,7 +52,24 @@ Started refactoring previous work - perimeter:
 ## Installation
 
 [TODO]
-Add `runtime ":to-uml:0.1"` to **BuildConfig.groovy** in plugins section (requires grails 2.0 > *).
+Add `runtime ":to-uml:0.2.0"` to **BuildConfig.groovy** in plugins section (requires grails 2.0 > *).
+
+## Development
+
+* Create a web-app: `grails create-app web` 
+* Add in BuildConfig of this new projet (adjust path as needed): 
+`grails.project.fork = [
+    test: false , 
+    run: false , 
+    war: false , 
+    console: false , 
+]
+grails.reload.enabled = true
+grails.plugin.location.'to-uml'="../grails-plugin-class-domain-uml"`
+
+Apart from the last line, we're basically turning off grails 2.3 forking process, which hampers auto-reload. 
+
+From then on, you can modify code in the plugin, and have your "web" application have the changes immediately.
 
 ## Usage
 
@@ -58,6 +77,6 @@ Run your app and navigate to `http://localhost:8080/yourApp/uml`
 
 ## Screenshots
 
-![Example 2](web-app/images/class-domain-uml-screenshot-2.png)
+![Domain example](src/gdoc/0.2.0-domain.png)
 
-![Example 1](web-app/images/class-domain-uml-screenshot-1.png)
+![Layers example](src/gdoc/0.2.0-layers.png)

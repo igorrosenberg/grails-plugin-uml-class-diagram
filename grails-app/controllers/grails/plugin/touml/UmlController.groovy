@@ -2,18 +2,20 @@ package grails.plugin.touml
 
 class UmlController {
 
-    def umlService
+    static defaultAction = "domain"
     
+    def umlService
+         
     def domain() {
         def umlURL = umlService.domain()
         render "<img src='$umlURL' />"
     }
 
-    def architecture() {
-        def umlURL = umlService.domain()
+    def layers() {
+        def umlURL = umlService.layers()
         render "<img src='$umlURL' />"
     }
     
-    // FIXME add the other method pointing to yUML
+    // FIXME add other methods pointing to yUML
     
 }
