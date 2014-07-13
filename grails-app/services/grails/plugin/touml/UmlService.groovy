@@ -69,7 +69,7 @@ class UmlService {
                 data.left = ''
                 data.right = ''
             }
-            data.typeName = it.getType().name 
+            data.typeName = it.getReferencedPropertyType().name 
             data.assocName = it.getName()
             
             data

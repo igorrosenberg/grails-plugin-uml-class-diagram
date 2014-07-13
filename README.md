@@ -15,14 +15,14 @@ Generate UML diagrams from your Grails app source code.
   1. [TODO] document specifically webapp interfaces (public methods of Controllers, with javadoc, input/output spec?) 
   
 ## Finished dev tasks  
-* (Igor) Refactor (pass1) script / controller / service (UmlController | UmlService | PlantUmlService |YumlService)
-* (Igor) domain >> all fields not external (ie excluding hasmany)
-* (Igor) domain introspection result to diagram spec
+* (Igor v0.2.0) Refactor (pass1) script / controller / service (UmlController | UmlService | PlantUmlService |YumlService)
+* (Igor v0.2.0) domain >> all fields not external (ie excluding hasmany)
+* (Igor v0.2.0) domain introspection result to diagram spec
+* (Igor v0.2.1) domains >> list dependencies (hasmany)1
   
 ## Ongoing dev tasks  
 Started refactoring previous work - perimeter: 
 * (Igor) Refactor (pass2) script / controller / service (UmlController | UmlService | PlantUmlService |YumlService)
-* (Igor) domains >> list dependencies (hasmany)
 
 ## Future dev tasks  
 * domain >> filter fields via config parameter (eg: exclude id and version)
@@ -58,18 +58,18 @@ Add `runtime ":to-uml:0.2.0"` to **BuildConfig.groovy** in plugins section (requ
 
 * Create a web-app: `grails create-app web` 
 * Add in BuildConfig of this new projet (adjust path as needed): 
-`grails.project.fork = [
-    test: false , 
-    run: false , 
-    war: false , 
-    console: false , 
-]
-grails.reload.enabled = true
-grails.plugin.location.'to-uml'="../grails-plugin-class-domain-uml"`
+    grails.project.fork = [
+        test: false , 
+        run: false , 
+        war: false , 
+        console: false , 
+    ]
+    grails.reload.enabled = true
+    grails.plugin.location.'to-uml'="../grails-plugin-class-domain-uml"`
 
 Apart from the last line, we're basically turning off grails 2.3 forking process, which hampers auto-reload. 
 
-From then on, you can modify code in the plugin, and have your "web" application have the changes immediately.
+From then on, you can modify code in the plugin, and your "web" application reflects the changes immediately.
 
 ## Usage
 
@@ -79,4 +79,4 @@ Run your app and navigate to `http://localhost:8080/yourApp/uml`
 
 ![Domain example](src/gdoc/0.2.0-domain.png)
 
-![Layers example](src/gdoc/0.2.0-layers.png)
+[TODO] ![Layers example](src/gdoc/0.2.0-layers.png)
