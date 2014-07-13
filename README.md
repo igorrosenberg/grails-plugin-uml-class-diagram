@@ -4,32 +4,31 @@ grails-plugin-to-uml
 Generate UML diagrams from your Grails app source code.
 
 ## Features
-  1. [*DONE*] Global Class diagrams for Domain  (see screenshot section below)
-  1. [*DONE*] Diagram generation using online [PlantUML server](http://www.plantuml.com/plantuml) (ie no need to rely on plantUML.jar - no local image generation) 
+  1. [ *DONE* ] Global Class diagrams for Domain  (see screenshot section below)
+  1. [ *DONE* ] Diagram generation using online [PlantUML server](http://www.plantuml.com/plantuml) (ie no need to rely on plantUML.jar - no local image generation) 
+  1. [ *DONE* ] Diagrams exposed as specific UmlController (http interface)
   1. [TODO] Global Class diagrams (layered) for Controllers & Services & other beans (only public methods, no javadoc comments)
   1. [TODO] Diagram generation in PNG via plantUML.jar from [PlantUML project](http://plantuml.sourceforge.net/)
-  1. [TODO] Diagrams exposed as specific UmlController (http interface)
   1. [TODO] Diagrams exposed as a grails script: "grails to-uml" (cli interface)
-  1. [TODO]  Diagram generation using online [yUML](http://www.yuml.me/diagram/scruffy/class/draw) (different syntax)
   1. [TODO] Inclusion in standard gdoc process
-  1. [TODO] document specifically webapp interfaces (public methods of Controllers, with javadoc, input/output spec?) 
+  1. [TODO] Diagram generation using online [yUML](http://www.yuml.me/diagram/scruffy/class/draw) (different syntax)
+  1. [TODO] Document specifically webapp interfaces (public methods of Controllers, with javadoc, input/output spec?) 
   
 ## Finished dev tasks  
-* (Igor v0.2.0) Refactor (pass1) script / controller / service (UmlController | UmlService | PlantUmlService |YumlService)
-* (Igor v0.2.0) domain >> all fields not external (ie excluding hasmany)
-* (Igor v0.2.0) domain introspection result to diagram spec
-* (Igor v0.2.1) domains >> list dependencies (hasmany)
+* (v0.2.0) Refactor (pass1) script / controller / service (UmlController | UmlService | PlantUmlService |YumlService)
+* (v0.2.0) domain introspection result to diagram spec
+* (v0.2.0) domain >> all fields not external (ie excluding hasmany)
+* (v0.2.1) domain >> list dependencies (hasmany)
   
 ## Ongoing dev tasks  
-Started refactoring previous work - perimeter: 
-* (Igor) Refactor (pass2) script / controller / service (UmlController | UmlService | PlantUmlService |YumlService)
+  * controllers >> list dependencies
 
 ## Future dev tasks  
+*  Refactor (pass2) script / controller / service (UmlController | UmlService | PlantUmlService |YumlService)
 * domain >> (as option = config parameter) filter fields via regexp (eg: exclude id and version)
 * domain >> (as option = config parameter) no duplication: if isAssociation, don't list in properties
 * domain >> (as option = config parameter) no language package names: java.lang, java.util
 * grails introspect 
-  * controllers >> list dependencies
   * services >> list dependencies
   * controllers, services >> public methods
   * introspection result to diagram spec
