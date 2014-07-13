@@ -8,12 +8,12 @@ class UmlController {
          
     def domain() {
         def umlURL = umlService.domain()
-        render "<img src='$umlURL' />"
+        redirect url:umlURL
     }
 
     def layers() {
         def umlURL = umlService.layers()
-        render "<img src='$umlURL' />"
+        redirect url:umlURL
     }
     
     // FIXME add other methods pointing to yUML
