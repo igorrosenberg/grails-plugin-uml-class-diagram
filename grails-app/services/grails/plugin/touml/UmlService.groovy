@@ -37,7 +37,14 @@ class UmlService {
      	 log.debug "Properties: ${properties}"
        properties.collect { 
           def name = it.getName()
-          def type =  it.getType().toString().replaceAll("class ", "")
+          
+          def type =  it.getType().name
+          def ref = it.getReferencedPropertyType().name 
+          if (type != ref) {
+                type = "${type}<${ref}>"
+            }
+
+          
           [name:name, type:type]
         }
       }

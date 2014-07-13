@@ -45,13 +45,7 @@ class PlantUmlService {
               // uml.append(relation).append('\n')
           }
         }
-/*
-        for(model in packages.values().flatten()) {
-          model.associations.each() { relation ->
-              uml.append(relation).append('\n')
-          }
-        }
-*/
+
         // draw subClasses
         for(model in packages.values().flatten()) {
           model.subClasses.each() { subClass ->
