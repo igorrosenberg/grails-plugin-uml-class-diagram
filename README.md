@@ -77,6 +77,6 @@ Run your app and navigate to `http://localhost:8080/yourApp/uml`
 
 ## Screenshots
 
-![Domain example](src/gdoc/0.2.0-domain.png)
+![Domain example](src/gdoc/0.2.1-domain.png)
 
 [TODO] ![Layers example](src/gdoc/0.2.0-layers.png)
