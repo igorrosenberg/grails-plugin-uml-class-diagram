@@ -16,6 +16,4 @@ class UmlController {
         redirect url:umlURL
     }
     
-    // FIXME add other methods pointing to yUML
-    
 }

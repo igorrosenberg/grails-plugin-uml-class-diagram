@@ -6,14 +6,53 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 /**
  * Generate UML diagrams from grails classes.
  */
-
 class UmlService {
+
+   static final ARTEFACTS  = [
+   Controller:   
+      'defaultAction,instanceControllerTagLibraryApi,controllerUri,nstanceControllerTagLibraryApi,session,servletContext,controllerClass,response,controllerName,webRequest,assetProcessorService,grailsAttributes,instanceControllersRestApi,applicationContext,flash,class,actionName,actionUri,modelAndView,pluginContextPath,errors,instanceControllersApi,params,chainModel,grailsApplication,request,controllerNamespace'.split(',') ,
+    Service:'class'.split(',')]
 
    def grailsApplication
    
    def plantUmlService
    
    def yUmlService
+   
+   
+  /**
+  * Expose internal layered architecture (controllers and services).
+  * @return a String to be read as a URL to an online rendering service
+  */
+  String layers() {
+    def artefacts = [:]
+    ARTEFACTS.each {  artefactType, exclusionList ->
+      def packages = [:]             // a map of <packageNames, List<Artefacts>>
+      for (model in grailsApplication.getArtefacts(artefactType)){
+          def packageName = model.getPackageName()
+          if (!packages[packageName]) { 
+            packages[packageName] = []
+            }
+          packages[packageName].add(extractArtefactData(model,packageName, exclusionList))
+      }
+      artefacts[artefactType] = packages
+    }
+    plantUmlService.asUmlLayers(artefacts)
+    }
+  
+  /**
+  * @return data exposed by the artefact as a map (className, properties, associations)
+  */
+  private extractArtefactData(model,packageName, exclusionList){
+     log.debug "Artefact data: " + model.name       
+     def properties = model.getReferenceInstance().properties.keySet() 
+     exclusionList.each { properties -= it }
+     [
+     className: model.fullName, 
+     properties: properties,
+     associations: [],
+      ]
+  }
   
   /**
   * @return a String to be read as a URL to an online rendering service
@@ -27,7 +66,7 @@ class UmlService {
           }
         packages[packageName].add(extractDomainData(model,packageName))
     }
-    plantUmlService.asUML(packages)
+    plantUmlService.asUml(packages)
   }
 
      /**
@@ -89,8 +128,8 @@ class UmlService {
 				def coponentBaseDomain = grailsApplication.domainClasses.find { it.name == fullName}
 				log.debug "fullName has sub classes ? " + coponentBaseDomain.hasSubClasses()
 				coponentBaseDomain.getSubClasses().collect { 
-						  			"$fullName <|-- $p.${it.name}"
-				                  	}	
+            "$fullName <|-- $p.${it.name}"
+            }	
     }	
 
     /**

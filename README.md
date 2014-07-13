@@ -19,9 +19,11 @@ Generate UML diagrams from your Grails app source code.
 * (v0.2.0) domain introspection result to diagram spec
 * (v0.2.0) domain >> all fields not external (ie excluding hasmany)
 * (v0.2.1) domain >> list dependencies (hasmany)
+* (v0.2.2) grails introspect 
+  * controllers >> list dependencies
+  * services >> list dependencies
   
 ## Ongoing dev tasks  
-  * controllers >> list dependencies
 
 ## Future dev tasks  
 *  Refactor (pass2) script / controller / service (UmlController | UmlService | PlantUmlService |YumlService)
@@ -29,11 +31,10 @@ Generate UML diagrams from your Grails app source code.
 * domain >> (as option = config parameter) no duplication: if isAssociation, don't list in properties
 * domain >> (as option = config parameter) no language package names: java.lang, java.util
 * grails introspect 
-  * services >> list dependencies
   * controllers, services >> public methods
   * introspection result to diagram spec
-* plantUml Class diagram spec (non trivial example)
-* plantUml Dependency diagram spec (non trivial example)
+* ~~plantUml Class diagram spec (non trivial example)~~
+* ~~plantUml Dependency diagram spec (non trivial example)~~
 * plantUml diagram spec to PNG file
 * plantUml diagram spec to PNG byteStream  
 * Yuml as secondary option
@@ -80,4 +81,4 @@ Run your app and navigate to `http://localhost:8080/yourApp/uml`
 
 ![Domain example](src/gdoc/0.2.1-domain.png)
 
-[TODO] ![Layers example](src/gdoc/0.2.0-layers.png)
+![Layers example](src/gdoc/0.2.2-layers.png)
