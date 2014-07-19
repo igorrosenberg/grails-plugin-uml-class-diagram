@@ -19,13 +19,106 @@ class UmlService {
    
    def yUmlService
    
+  /**
+  * Expose UML. 
+  * @return a String to be read as a URL to an online rendering service.
+  */
+  String generate(config) {
+     if (config.diagramType == DiagramType.DOMAIN) {
+       domain(config)
+     } else {
+        layers(config)
+     }
+
+  }
+
+  /**
+  *  @param packages a map of <packageNames,List<DomainClass>>   
+  * TODO heavy optimization probably possible here
+  */
+   private customize(packages, config) {
    
+   packages.keySet().each {  packageName ->
+      def classList  = packages[packageName] 
+      
+      // Filter fields based on regexps
+      classList.each { classData ->
+        classData.properties = classData.properties.findAll { propName ->
+          for (regexp in config.fieldFilterRegexps) {
+            if(propName.name.matches(regexp)) {
+              return false
+              }
+          }
+          return true
+          }
+      }
+      
+      // Filter classes based on regexps
+      classList = classList.findAll{ classData ->
+           // OPTIMIZE as return ! config.classFilterRegexps.find {regexp  -> classData.className.matches(regexp) }
+          for (regexp in config.classFilterRegexps) {
+            if(classData.className.matches(regexp)) {
+              return false
+              }
+          }
+          return true
+          }
+
+      // Also Filter (based on regexps) classes referenced in the associations 
+      classList.each { classData ->
+        classData.associations = classData.associations.findAll { association ->
+          for (regexp in config.classFilterRegexps) {   
+            println "FILTERING " + association.typeName + " AND " + association.modelName+ " WITH " + regexp
+            if( association.typeName.matches(regexp)  || association.modelName.matches(regexp) ) {
+              return false
+              }
+          }
+          return true
+          }
+      }
+          
+
+      // shorten all Java class names  
+      if (!config.showCanonicalJavaClassNames) {
+        
+        classList.each { classData ->
+          classData.properties.collect { propName ->
+            'java.lang,java.util,java.io'.split(',').each {
+              propName.type =  propName.type.replaceAll("^$it\\.",'') 
+            }         
+          }    
+        }
+      }
+
+      packages[packageName]  = classList 
+   }
+   
+   }
+  
+  /**
+  * @return a String to be read as a URL to an online rendering service
+  */
+  String domain (config) {
+    def packages = [:]             // a map of <packageNames,List<DomainClass>>
+    for (model in grailsApplication.domainClasses ){
+        def packageName = model.getPackageName()
+        if (!packages[packageName]) { 
+          packages[packageName] = []
+          }
+        packages[packageName].add(extractDomainData(model,packageName))
+    }
+    
+    customize(packages, config)
+    
+    plantUmlService.asUml(packages)
+  }
+  
   /**
   * Expose internal layered architecture (controllers and services).
   * @return a String to be read as a URL to an online rendering service
   */
-  String layers() {
-    def artefacts = [:]
+  String layers(config) {
+    def artefacts = [:]     // a map of <artefactType, mapAsBelow>
     ARTEFACTS.each {  artefactType, exclusionList ->
       def packages = [:]             // a map of <packageNames, List<Artefacts>>
       for (model in grailsApplication.getArtefacts(artefactType)){
@@ -37,6 +130,12 @@ class UmlService {
       }
       artefacts[artefactType] = packages
     }
+    
+    artefacts.each {artefactType, packages ->
+      customize(packages, config)
+    }
+    
+
     plantUmlService.asUmlLayers(artefacts)
     }
   
@@ -54,20 +153,6 @@ class UmlService {
       ]
   }
   
-  /**
-  * @return a String to be read as a URL to an online rendering service
-  */
-  String domain () {
-    def packages = [:]             // a map of <packageNames,List<DomainClass>>
-    for (model in grailsApplication.domainClasses ){
-        def packageName = model.getPackageName()
-        if (!packages[packageName]) { 
-          packages[packageName] = []
-          }
-        packages[packageName].add(extractDomainData(model,packageName))
-    }
-    plantUmlService.asUml(packages)
-  }
 
      /**
      * @return List<map(propertyName, propertyType)>
@@ -82,8 +167,7 @@ class UmlService {
           if (type != ref) {
                 type = "${type}<${ref}>"
             }
-
-          
+            
           [name:name, type:type]
         }
       }
@@ -122,16 +206,6 @@ class UmlService {
         }
       }
     
-     private subClassesToSpec (fullName, p) {
-				log.warn "subClassesToSpec BUGGED"
-        return []
-				def coponentBaseDomain = grailsApplication.domainClasses.find { it.name == fullName}
-				log.debug "fullName has sub classes ? " + coponentBaseDomain.hasSubClasses()
-				coponentBaseDomain.getSubClasses().collect { 
-            "$fullName <|-- $p.${it.name}"
-            }	
-    }	
-
     /**
      *  Given a Class, extract useful data in a map (className, properties, associations, subClasses)
      *   @param p TODO remove this param
@@ -145,7 +219,6 @@ class UmlService {
       className: model.fullName,
       properties: propertiesToSpec(instance.getProperties()),
       associations: associationsToSpec(model.fullName, instance.getAssociations()),
-      subClasses: subClassesToSpec (model.fullName, p),
       ]
       }
 
