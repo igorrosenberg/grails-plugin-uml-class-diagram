@@ -6,13 +6,11 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 /**
  * Generate diagrams from Graph using PlantUml formalism.
  */
-
 class PlantUmlService {
          
     static final WEB_ROOT = 'http://www.plantuml.com/plantuml/img/'
 
-    def grailsApplication
-          
+    def grailsApplication         
           
     private shortName(name) {
       name.replaceAll('^.*\\.', '')      
@@ -25,7 +23,7 @@ class PlantUmlService {
    String asUmlLayers(layers){
         StringBuilder uml = new StringBuilder()
         
-        uml .append('@startuml\n')
+        uml.append('@startuml\n')
         
         def artefactNameList = []
         
@@ -83,8 +81,10 @@ class PlantUmlService {
             // Each model of package
             for(model in classList) {
                 uml.append('class ').append(model.className).append(' {\n') 
-                uml.append(model.properties.collect {"${it.name} : ${it.type}"}.join('\n'))
-                uml.append('\n}\n')   // class end
+                model.properties.each {
+                    uml.append(it.name).append(' : ').append(it.type).append('\n')
+                  }
+                uml.append('}\n')   // class end
             }
             uml.append('}\n') // Package end
         }
@@ -93,17 +93,9 @@ class PlantUmlService {
         for(model in packages.values().flatten()) {
           model.associations.each() { relation ->
                   ['modelName','left','type','right','typeName'].each { key ->
-                    uml.append(relation[key] + ' ')
-                  }
-                  uml.append(': ' + relation['assocName']).append('\n')
-              // uml.append(relation).append('\n')
-          }
-        }
-
-        // draw subClasses
-        for(model in packages.values().flatten()) {
-          model.subClasses.each() { subClass ->
-              uml.append(subClass).append('\n')
+                    uml.append(relation[key]).append(' ')
+           }
+           uml.append(': ').append(relation['assocName']).append('\n')
           }
         }
 
@@ -120,15 +112,15 @@ class PlantUmlService {
         }    
         
 
-                // extra provenance information
-private String metaData() {
+        // extra provenance information
+        private String metaData() {
 """
 title ${grailsApplication.metadata.'app.name'} - ${grailsApplication.metadata.'app.version'}
 legend left
 Grails version: ${grailsApplication.metadata.'app.grails.version'}
 endlegend
 """
-}
+        }
 
     /**
     * Zlib compression (compatible plantUML).
