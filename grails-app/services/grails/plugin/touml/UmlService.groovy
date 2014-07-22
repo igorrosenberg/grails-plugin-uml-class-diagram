@@ -8,10 +8,12 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
  */
 class UmlService {
 
-   static final ARTEFACTS  = [
+   static final ARTEFACTS  = 
+   [
    Controller:   
-      'defaultAction,instanceControllerTagLibraryApi,controllerUri,nstanceControllerTagLibraryApi,session,servletContext,controllerClass,response,controllerName,webRequest,assetProcessorService,grailsAttributes,instanceControllersRestApi,applicationContext,flash,class,actionName,actionUri,modelAndView,pluginContextPath,errors,instanceControllersApi,params,chainModel,grailsApplication,request,controllerNamespace'.split(',') ,
-    Service:'class'.split(',')]
+      'defaultAction,instanceControllerTagLibraryApi,controllerUri,instanceControllerTagLibraryApi,session,servletContext,controllerClass,response,controllerName,webRequest,assetProcessorService,grailsAttributes,instanceControllersRestApi,applicationContext,flash,class,actionName,actionUri,modelAndView,pluginContextPath,errors,instanceControllersApi,params,chainModel,grailsApplication,request,controllerNamespace',
+    Service:'class'
+    ].collectEntries{ k, v -> [k, v.split(',')] }
 
    def grailsApplication
    
