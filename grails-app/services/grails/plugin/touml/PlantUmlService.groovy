@@ -36,12 +36,11 @@ class PlantUmlService {
                 for (artefact in artefactList) {
                     def artefactName = shortName(artefact.className)
                     artefactNameList << artefactName
-                    uml.append('class ').append(artefactName) // class start
-                    uml.append(' {\n') 
-                    uml.append(
-                      artefact.properties.join('\n')
-                      )
-                    uml.append('\n}\n')   // class end
+                    uml.append('class ').append(artefactName).append(' {\n')  // class start
+                    artefact.properties.each {
+                      uml.append(it).append('\n')
+                    }
+                    uml.append('}\n')   // class end
                 }
             }
             uml.append('}\n') // Package end
@@ -59,7 +58,7 @@ class PlantUmlService {
           }
         }
         
-        uml .append('@enduml\n')
+        uml.append('@enduml\n')
 
         postProcess(uml)
 
@@ -73,7 +72,7 @@ class PlantUmlService {
 
         StringBuilder uml = new StringBuilder()
         
-        uml .append('@startuml\n')       
+        uml.append('@startuml\n')       
 
         // draw Packages
         packages.each { packageName, classList ->
@@ -93,13 +92,13 @@ class PlantUmlService {
         for(model in packages.values().flatten()) {
           model.associations.each() { relation ->
                   ['modelName','left','type','right','typeName'].each { key ->
-                    uml.append(relation[key]).append(' ')
-           }
-           uml.append(': ').append(relation['assocName']).append('\n')
+                      uml.append(relation[key]).append(' ')
+                   }
+                   uml.append(': ').append(relation['assocName']).append('\n')
           }
         }
 
-         uml .append('@enduml\n')
+         uml.append('@enduml\n')
 
         postProcess(uml)
         }
