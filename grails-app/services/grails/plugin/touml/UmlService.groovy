@@ -91,7 +91,17 @@ class UmlService {
     else       
       listClasses = getControllersAndServices(config)     
     
-    plantUmlService.asUml(customize(listClasses, config))
+    listClasses = customize(listClasses, config)
+    def map = [:]
+    listClasses.each{
+        def packageName = it.packageName ?: '_'
+        if (!map[packageName]) {
+          map[packageName] = []
+          }
+        map[packageName].add(it)
+    }
+    
+    plantUmlService.asUml(map)
   }  
   
   /**
@@ -109,6 +119,17 @@ class UmlService {
   * @return a List<ClassData> 
   */
   private getControllersAndServices(config) {
+  
+    println 'beans # ' + grailsApplication.getMainContext(). getBeanDefinitionNames().size()
+    /*
+    println 'contr ' + grailsApplication.getMainContext().getBean('grails.plugin.touml.UmlController').getClass()
+    println 'contr ' + grailsApplication.getMainContext().getBean('toUmlUmlService').getClass()
+    println grailsApplication.getMainContext().getBeanDefinitionNames().findAll{  
+      it =~ /.*Controller/ || it =~ /.*Service/ 
+    throw new IOException('no')
+    }*/
+
+    
     ARTEFACTS.collect {  artefactType, exclusionList ->
       if (!config.filterGrailsFields) 
         exclusionList = []
@@ -124,14 +145,14 @@ class UmlService {
   * @return useful data in a ClassData map (className, properties, associations).
   */
   private extractArtefactData(model, exclusionList){
-     log.debug "Introspect artefact data for bean=" + model.name       
+     log.debug "Introspect artefact data for bean=" + model.name      
+     // maybe need to get the bean instance via grailsApplication.getMainContext().getBean() 
      
-     def properties = model.getReferenceInstance() .properties.findAll { k, v -> ! (k in exclusionList)}
      def data = 
      [
      packageName: model.packageName,
      className: model.fullName, 
-     properties: propertiesToSpec3(properties),
+     properties: propertiesToSpec3(model,exclusionList),
      associations: [],
       ]
       log.debug "artefact properties: ${data.properties}"
@@ -140,9 +161,12 @@ class UmlService {
      /**
      * @return List<map(propertyName, propertyType)>
      */
-     private propertiesToSpec3(properties){
+     private propertiesToSpec3(model, exclusionList){
+        def properties = model.getReferenceInstance().properties.findAll { k, v -> ! (k in exclusionList)}
         properties.collect { k,v ->
-          [name: k , type:v.getClass().getCanonicalName()]
+            // [name: k , type: (v ? v.getClass().getCanonicalName() : k.capitalize() ) ]
+            // Why so many NullObject ?
+            [name: k , type:v.getClass().getCanonicalName()]            
         }
      }
   
