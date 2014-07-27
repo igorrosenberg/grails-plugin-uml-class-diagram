@@ -68,7 +68,7 @@ class UmlService {
               }
           }
           return true
-          }
+          }.sort {it.name}
       }
       
           
