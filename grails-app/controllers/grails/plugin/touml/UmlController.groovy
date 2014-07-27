@@ -19,17 +19,17 @@ class ConfigurationCommand {
   String [] fieldFilterRegexps
   /** Filters restricting the visibility of classes */
   String [] classFilterRegexps
-  /** Short Class names for mosted used Java classes*/
-  boolean showCanonicalJavaClassNames
+  /** Short Class names for most used Java classes (from java API) */
+  boolean showCanonicalJavaClassNames = false
   boolean filterGrailsFields = true
   DiagramType diagramType 
 
-  /** Canonical or Short Class names */
+  /** Canonical or Short Class names for all fileds, not restricted to java API*/
   // NOT READY boolean showCanonicalClassNames
   /** Properties which generate an arrow also listed in the origin class */
   // NOT READY boolean duplicateFieldAndArrow
   /** Classes provided by the Grails framework */
-  // NOT READY boolean showGrailsInternals
+  boolean showGrailsInternalClasses = false
   
     static constraints = {
         fieldFilterRegexps nullable: true

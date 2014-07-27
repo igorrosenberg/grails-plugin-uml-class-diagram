@@ -9,6 +9,8 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 class UmlService {
 
   static final UNKNOWN = 'UnknownType'
+  static final GRAILS_ARTEFACTS  = 'JQueryService,grails.plugin.cache.GrailsCacheAdminService,asset.pipeline.AssetsController,asset.pipeline.AssetProcessorService,grails.plugin.databasemigration.DbdocController'.split(',')
+           
    static final ARTEFACTS  = 
    [
    Controller:   
@@ -28,6 +30,11 @@ class UmlService {
   */
    private customize(classList, config) {
    
+      if (!config.showGrailsInternalClasses) {      
+        // add grails internals to list of regexps
+        config.classFilterRegexps += GRAILS_ARTEFACTS
+      }      
+      
       // Filter classes based on regexps
       classList = classList.findAll { classData ->
         // OPTIMIZE as return ! config.classFilterRegexps.find {regexp  -> classData.className.matches(regexp) }
@@ -61,7 +68,7 @@ class UmlService {
               }
           }
           return true
-          }
+          }.sort {it.name}
       }
       
           
@@ -142,7 +149,7 @@ class UmlService {
     ARTEFACTS.collect {  artefactType, exclusionList ->
       if (!config.filterGrailsFields) 
         exclusionList = []
-      grailsApplication.getArtefacts(artefactType).collect{
+        grailsApplication.getArtefacts(artefactType).collect{
           extractArtefactData(it, exclusionList)
       }
     }.flatten()
