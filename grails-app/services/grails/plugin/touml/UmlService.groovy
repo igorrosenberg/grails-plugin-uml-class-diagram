@@ -8,152 +8,191 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
  */
 class UmlService {
 
-   static final ARTEFACTS  = [
+  static final UNKNOWN = 'UnknownType'
+   static final ARTEFACTS  = 
+   [
    Controller:   
-      'defaultAction,instanceControllerTagLibraryApi,controllerUri,nstanceControllerTagLibraryApi,session,servletContext,controllerClass,response,controllerName,webRequest,assetProcessorService,grailsAttributes,instanceControllersRestApi,applicationContext,flash,class,actionName,actionUri,modelAndView,pluginContextPath,errors,instanceControllersApi,params,chainModel,grailsApplication,request,controllerNamespace'.split(',') ,
-    Service:'class'.split(',')]
+      'defaultAction,instanceControllerTagLibraryApi,controllerUri,instanceControllerTagLibraryApi,session,servletContext,controllerClass,response,controllerName,webRequest,assetProcessorService,grailsAttributes,instanceControllersRestApi,applicationContext,flash,class,actionName,actionUri,modelAndView,pluginContextPath,errors,instanceControllersApi,params,chainModel,grailsApplication,request,controllerNamespace',
+    Service:'class'
+    ].collectEntries{ k, v -> [k, v.split(',')] }
 
    def grailsApplication
    
    def plantUmlService
    
    def yUmlService
+
+  /**
+  * @param classList  List<ClassData> 
+  * TODO heavy optimization probably possible here
+  */
+   private customize(classList, config) {
    
+      // Filter classes based on regexps
+      classList = classList.findAll { classData ->
+        // OPTIMIZE as return ! config.classFilterRegexps.find {regexp  -> classData.className.matches(regexp) }
+        for (regexp in config.classFilterRegexps) {
+          if(classData.className.matches(regexp)) {
+            return false
+          }
+        }
+        return true
+      }
+
+      // Also remove these classes when referenced in the associations (reusing previous regexps)
+      classList.each { classData ->
+        classData.associations = classData.associations.findAll { association ->
+          for (regexp in config.classFilterRegexps) {   
+            log.debug "Filtering ${association.modelName} --> ${association.typeName} with $regexp"
+            if ( association.typeName.matches(regexp) || association.modelName.matches(regexp) ) {
+              return false
+              }
+          }
+          return true
+          }
+      }
+      
+      // Filter fields based on regexps
+      classList.each { classData ->
+        classData.properties = classData.properties.findAll { property ->
+          for (regexp in config.fieldFilterRegexps) {
+            if(property.name.matches(regexp)) {
+              return false
+              }
+          }
+          return true
+          }
+      }
+      
+          
+
+      // shorten all Java class names  
+      if (!config.showCanonicalJavaClassNames) {
+        classList.each { classData ->
+          classData.properties.collect { property ->
+            'java.lang,java.util,java.io'.split(',').each {
+              property.type =  property.type.replaceAll("^$it\\.",'') 
+            }         
+          }    
+        }
+      }
+      
+      classList
+   
+   }
+
+    String getType(beanName) { 
+        // FIXME sometimes artefact.propertyName is capitalized, sometimes not ?!
+        def type = UNKNOWN 
+        beanName = beanName.capitalize()
+        if (beanName =~ /.*Service/) {
+           def serviceArtefact = grailsApplication.getArtefacts('Service').find{ it ->
+              it.propertyName.capitalize() == beanName
+            }
+            if (serviceArtefact) {
+              log.debug "   --- $beanName has matching artefact: $serviceArtefact" 
+              type =  serviceArtefact.fullName
+              }
+        }
+        
+        log.debug "Type for $beanName : $type"
+        type
+    } 
+    
   /**
   * Expose UML. 
   * @return a String to be read as a URL to an online rendering service.
   */
   String generate(config) {
-     if (config.diagramType == DiagramType.DOMAIN) {
-       domain(config)
-     } else {
-        layers(config)
-     }
-
+    def listClasses     // a List<ClassData>
+    if (config.diagramType == DiagramType.DOMAIN)
+      listClasses = getDomain(config) 
+    else       
+      listClasses = getControllersAndServices(config)     
+    
+    listClasses = customize(listClasses, config)
+    def map = [:]
+    listClasses.each{
+        def packageName = it.packageName ?: '_'
+        if (!map[packageName]) {
+          map[packageName] = []
+          }
+        map[packageName].add(it)
+    }
+    
+    plantUmlService.asUml(map)
+  }  
+  
+  /**
+  * Introspect all domain classes. 
+  * @return a List<ClassData> 
+  */
+  private getDomain(config) {
+    grailsApplication.domainClasses.collect {
+      extractDomainData(it)
+    }
   }
 
   /**
-  *  @param packages a map of <packageNames,List<DomainClass>>   
-  * TODO heavy optimization probably possible here
+  * Introspect the internal layered architecture (controllers and services).
+  * @return a List<ClassData> 
   */
-   private customize(packages, config) {
-   
-   packages.keySet().each {  packageName ->
-      def classList  = packages[packageName] 
-      
-      // Filter fields based on regexps
-      classList.each { classData ->
-        classData.properties = classData.properties.findAll { propName ->
-          for (regexp in config.fieldFilterRegexps) {
-            if(propName.name.matches(regexp)) {
-              return false
-              }
-          }
-          return true
-          }
+  private getControllersAndServices(config) {
+  
+    ARTEFACTS.collect {  artefactType, exclusionList ->
+      if (!config.filterGrailsFields) 
+        exclusionList = []
+      grailsApplication.getArtefacts(artefactType).collect{
+          extractArtefactData(it, exclusionList)
       }
-      
-      // Filter classes based on regexps
-      classList = classList.findAll{ classData ->
-           // OPTIMIZE as return ! config.classFilterRegexps.find {regexp  -> classData.className.matches(regexp) }
-          for (regexp in config.classFilterRegexps) {
-            if(classData.className.matches(regexp)) {
-              return false
-              }
-          }
-          return true
-          }
-
-      // Also Filter (based on regexps) classes referenced in the associations 
-      classList.each { classData ->
-        classData.associations = classData.associations.findAll { association ->
-          for (regexp in config.classFilterRegexps) {   
-            println "FILTERING " + association.typeName + " AND " + association.modelName+ " WITH " + regexp
-            if( association.typeName.matches(regexp)  || association.modelName.matches(regexp) ) {
-              return false
-              }
-          }
-          return true
-          }
-      }
-          
-
-      // shorten all Java class names  
-      if (!config.showCanonicalJavaClassNames) {
-        
-        classList.each { classData ->
-          classData.properties.collect { propName ->
-            'java.lang,java.util,java.io'.split(',').each {
-              propName.type =  propName.type.replaceAll("^$it\\.",'') 
-            }         
-          }    
+    }.flatten()
+    
+    }
+  
+  /**
+  *  Introspect an Artefact.
+  * @return useful data in a ClassData map (className, properties, associations).
+  */
+  private extractArtefactData(model, exclusionList){
+     log.debug "Introspect artefact data for bean=" + model.name
+     
+     def data = 
+     [
+     packageName: model.packageName,
+     className: model.fullName, 
+     properties: propertiesToSpec3(model,exclusionList),
+     associations: associationsToSpec3(model,exclusionList),
+      ]
+      log.debug "artefact properties: ${data.properties}"
+      data
+  }
+     /**
+     * @return List<map(propertyName, propertyType)>
+     */
+     private propertiesToSpec3(model, exclusionList){
+        def properties = model.getReferenceInstance().properties.findAll { k, v -> ! (k in exclusionList)}
+        properties.collect { k,v ->
+            [name: k , type: v ? v.getClass().canonicalName.replaceAll('\\$.*$', '') : getType(k)]
+        }
+     }
+  
+     /**
+     * @return List<(modelName, left, type, right, typeName,assocName)>
+     */
+      private associationsToSpec3(model, exclusionList){
+        def properties = model.getReferenceInstance().properties.findAll { k, v -> ! (k in exclusionList)}
+        properties.collect { k,v ->
+            def type = getType(k)
+            def data  = [type: 'o--', left: '', right:'"1"', 
+                modelName:  model.fullName, typeName: type.replaceAll('\\$.*$', ''), assocName: k] 
+            log.debug "Association ${data}"
+            data
+        }. findAll {
+          // also add conditional filter here
+          it.typeName  != UNKNOWN
         }
       }
-
-      packages[packageName]  = classList 
-   }
-   
-   }
   
-  /**
-  * @return a String to be read as a URL to an online rendering service
-  */
-  String domain (config) {
-    def packages = [:]             // a map of <packageNames,List<DomainClass>>
-    for (model in grailsApplication.domainClasses ){
-        def packageName = model.getPackageName()
-        if (!packages[packageName]) { 
-          packages[packageName] = []
-          }
-        packages[packageName].add(extractDomainData(model,packageName))
-    }
-    
-    customize(packages, config)
-    
-    plantUmlService.asUml(packages)
-  }
-  
-  /**
-  * Expose internal layered architecture (controllers and services).
-  * @return a String to be read as a URL to an online rendering service
-  */
-  String layers(config) {
-    def artefacts = [:]     // a map of <artefactType, mapAsBelow>
-    ARTEFACTS.each {  artefactType, exclusionList ->
-      def packages = [:]             // a map of <packageNames, List<Artefacts>>
-      for (model in grailsApplication.getArtefacts(artefactType)){
-          def packageName = model.getPackageName()
-          if (!packages[packageName]) { 
-            packages[packageName] = []
-            }
-          packages[packageName].add(extractArtefactData(model,packageName, exclusionList))
-      }
-      artefacts[artefactType] = packages
-    }
-    
-    artefacts.each {artefactType, packages ->
-      customize(packages, config)
-    }
-    
-
-    plantUmlService.asUmlLayers(artefacts)
-    }
-  
-  /**
-  * @return data exposed by the artefact as a map (className, properties, associations)
-  */
-  private extractArtefactData(model,packageName, exclusionList){
-     log.debug "Artefact data: " + model.name       
-     def properties = model.getReferenceInstance().properties.keySet() 
-     exclusionList.each { properties -= it }
-     [
-     className: model.fullName, 
-     properties: properties,
-     associations: [],
-      ]
-  }
-  
-
      /**
      * @return List<map(propertyName, propertyType)>
      */
@@ -207,20 +246,20 @@ class UmlService {
       }
     
     /**
-     *  Given a Class, extract useful data in a map (className, properties, associations, subClasses)
-     *   @param p TODO remove this param
+  *  Introspect a domain class.
+  * @return useful data in a ClassData map (className, properties, associations).
      */
-    private extractDomainData(model, p) {
-      log.debug "Extracting data from ${model.fullName.getClass()}"
+    private extractDomainData(model) {
       def c = grailsApplication.classLoader.loadClass("${model.fullName}")
-      // FIXME really need an object  ? already got a class...
+      log.debug "Introspect artefact data for ${model.fullName}"
+      // FIXME really need an object ? already got a class...
       def instance = new DefaultGrailsDomainClass(c)      
       [
+      packageName: model.packageName,
       className: model.fullName,
       properties: propertiesToSpec(instance.getProperties()),
       associations: associationsToSpec(model.fullName, instance.getAssociations()),
       ]
       }
-
 
 }    
