@@ -8,6 +8,7 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
  */
 class UmlService {
 
+  static final UNKNOWN = 'UnknownType'
    static final ARTEFACTS  = 
    [
    Controller:   
@@ -82,19 +83,18 @@ class UmlService {
 
     String getType(beanName) { 
         // FIXME sometimes artefact.propertyName is capitalized, sometimes not ?!
-        def type 
+        def type = UNKNOWN 
         beanName = beanName.capitalize()
         if (beanName =~ /.*Service/) {
            def serviceArtefact = grailsApplication.getArtefacts('Service').find{ it ->
               it.propertyName.capitalize() == beanName
             }
             if (serviceArtefact) {
-               log.debug "   --- $beanName has matching artefact: $serviceArtefact" 
+              log.debug "   --- $beanName has matching artefact: $serviceArtefact" 
               type =  serviceArtefact.fullName
               }
         }
         
-        type  = type ?: beanName
         log.debug "Type for $beanName : $type"
         type
     } 
@@ -139,16 +139,6 @@ class UmlService {
   */
   private getControllersAndServices(config) {
   
-    println 'beans # ' + grailsApplication.getMainContext(). getBeanDefinitionNames().size()
-    /*
-    println 'contr ' + grailsApplication.getMainContext().getBean('grails.plugin.touml.UmlController').getClass()
-    println 'contr ' + grailsApplication.getMainContext().getBean('toUmlUmlService').getClass()
-    println grailsApplication.getMainContext().getBeanDefinitionNames().findAll{  
-      it =~ /.*Controller/ || it =~ /.*Service/ 
-    throw new IOException('no')
-    }*/
-
-    
     ARTEFACTS.collect {  artefactType, exclusionList ->
       if (!config.filterGrailsFields) 
         exclusionList = []
@@ -164,15 +154,14 @@ class UmlService {
   * @return useful data in a ClassData map (className, properties, associations).
   */
   private extractArtefactData(model, exclusionList){
-     log.debug "Introspect artefact data for bean=" + model.name      
-     // maybe need to get the bean instance via grailsApplication.getMainContext().getBean() 
+     log.debug "Introspect artefact data for bean=" + model.name
      
      def data = 
      [
      packageName: model.packageName,
      className: model.fullName, 
      properties: propertiesToSpec3(model,exclusionList),
-     associations: [],
+     associations: associationsToSpec3(model,exclusionList),
       ]
       log.debug "artefact properties: ${data.properties}"
       data
@@ -183,13 +172,27 @@ class UmlService {
      private propertiesToSpec3(model, exclusionList){
         def properties = model.getReferenceInstance().properties.findAll { k, v -> ! (k in exclusionList)}
         properties.collect { k,v ->
-            // [name: k , type: (v ? v.getClass().getCanonicalName() : k.capitalize() ) ]
-            // Why so many NullObject ?
-            [name: k , type: v ? v.getClass().canonicalName : getType(k)]
+            [name: k , type: v ? v.getClass().canonicalName.replaceAll('\\$.*$', '') : getType(k)]
         }
      }
   
-
+     /**
+     * @return List<(modelName, left, type, right, typeName,assocName)>
+     */
+      private associationsToSpec3(model, exclusionList){
+        def properties = model.getReferenceInstance().properties.findAll { k, v -> ! (k in exclusionList)}
+        properties.collect { k,v ->
+            def type = getType(k)
+            def data  = [type: 'o--', left: '', right:'"1"', 
+                modelName:  model.fullName, typeName: type.replaceAll('\\$.*$', ''), assocName: k] 
+            log.debug "Association ${data}"
+            data
+        }. findAll {
+          // also add conditional filter here
+          it.typeName  != UNKNOWN
+        }
+      }
+  
      /**
      * @return List<map(propertyName, propertyType)>
      */
