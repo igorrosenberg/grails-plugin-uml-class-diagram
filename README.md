@@ -91,4 +91,4 @@ From then on, you can modify code in the plugin, and your "web" application refl
 
 ![Domain example](src/gdoc/0.2.1-domain.png)
 
-![Layers example](src/gdoc/0.2.2-layers.png)
+![Layers example](src/gdoc/0.2.5-layers.png)
