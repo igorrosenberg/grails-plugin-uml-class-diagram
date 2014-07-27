@@ -79,7 +79,26 @@ class UmlService {
       classList
    
    }
-  
+
+    String getType(beanName) { 
+        // FIXME sometimes artefact.propertyName is capitalized, sometimes not ?!
+        def type 
+        beanName = beanName.capitalize()
+        if (beanName =~ /.*Service/) {
+           def serviceArtefact = grailsApplication.getArtefacts('Service').find{ it ->
+              it.propertyName.capitalize() == beanName
+            }
+            if (serviceArtefact) {
+               log.debug "   --- $beanName has matching artefact: $serviceArtefact" 
+              type =  serviceArtefact.fullName
+              }
+        }
+        
+        type  = type ?: beanName
+        log.debug "Type for $beanName : $type"
+        type
+    } 
+    
   /**
   * Expose UML. 
   * @return a String to be read as a URL to an online rendering service.
@@ -166,7 +185,7 @@ class UmlService {
         properties.collect { k,v ->
             // [name: k , type: (v ? v.getClass().getCanonicalName() : k.capitalize() ) ]
             // Why so many NullObject ?
-            [name: k , type:v.getClass().getCanonicalName()]            
+            [name: k , type: v ? v.getClass().canonicalName : getType(k)]
         }
      }
   
