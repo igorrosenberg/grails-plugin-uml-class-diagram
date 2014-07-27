@@ -79,12 +79,91 @@ class UmlService {
       classList
    
    }
-  
+
+    String getTypeOld(beanName) { 
+    log.debug "Hey info for $beanName - " 
+    
+    // def beans = grailsApplication.mainContext.beanDefinitionNames
+    // log.debug "bean Names: ${beans} ..."
+
+    def count = 0 
+    def cc = 0
+    grailsApplication.mainContext.beanDefinitionNames.each {if (it =~ /.*${beanName}.*/) log.info"Found bean: $it" ; else count ++ }
+    log.debug "not matched beans: $count" 
+    if (grailsApplication.mainContext.beanDefinitionNames.contains(beanName)) {
+      def b = grailsApplication.mainContext.getBean(beanName).getClass()
+      b.superclass.canonicalName    
+    } else {
+    log.debug "------not matched bean: $beanName" 
+    beanName.capitalize()
+    }
+    
+     //def beans = grailsApplication.mainContext.beanDefinitionNames
+//println "beans: ${beans[0..2]} ..."
+//beans.each {if (it =~ /.*Service/) println it ; else System.out.print '.' }
+    //println 'UmlController Bean: ' + grailsApplication.getMainContext().getBean('grails.plugin.touml.UmlController').getClass()
+    /*
+    println beanName + ' Bean: ' + b
+    println beanName + " getSuperclass()  " +  b.getSuperclass() 
+    println beanName + " getFields()   " +  b.getFields() 
+    
+    // println b.properties.keySet()
+    // println b.declaredFields
+    //println grailsApplication.getMainContext().getBeanDefinitionNames().findAll{  
+     // it =~ /.*Controller/ || it =~ /.*Service/  
+     // }
+     */      
+    }
+    
+    String getType(beanName) { 
+        // FIXME sometimes artefact.propertyName is capitalized, sometimes not ?!
+        def type 
+        beanName = beanName.capitalize()
+        if (beanName =~ /.*Service/) {
+           def serviceArtefact = grailsApplication.getArtefacts('Service').find{ a ->              
+              a.propertyName.capitalize() == beanName
+            }
+            if (serviceArtefact) {
+               log.debug "   --- $beanName has matching artefact: $serviceArtefact" 
+              type =  serviceArtefact.fullName
+              }
+        }
+        
+        type  = type ?: beanName
+        log.debug "Hey type for $beanName : $type " 
+        type
+    }
   /**
   * Expose UML. 
   * @return a String to be read as a URL to an online rendering service.
   */
   String generate(config) {
+      println "TESTING: " + getType('yUmlService')
+      println "TESTING: " + getType('plantUmlService')
+      grailsApplication.getArtefacts('Service').each { a ->
+      log.trace '' + 
+      "\n a.fullName "+ a.fullName + 
+      "\n a.logicalPropertyName "+ a.logicalPropertyName + 
+      "\n a.propertyName "+ a.propertyName + 
+      "\n a.shortName "+ a.shortName 
+      } 
+  /*
+      println "artefact: " + grailsApplication. getArtefactByLogicalPropertyName('Service', 'yUml' )
+      println "artefact Contr: " + grailsApplication.getArtefactByLogicalPropertyName('Controller', 'uml' )
+      println "artefact umlService: " + grailsApplication.mainContext.getBean("umlService"); 
+      println "Service artefacts " + grailsApplication.getArtefacts('Service')
+      grailsApplication.getArtefacts('Service').each { a ->
+      log.info '' + 
+      "\n a.fullName "+ a.fullName + 
+      "\n a.logicalPropertyName "+ a.logicalPropertyName + 
+      "\n a.propertyName "+ a.propertyName + 
+      "\n a.shortName "+ a.shortName 
+      }
+      
+      println "artefact yUmlService: " + getType("yUmlService"); 
+      return '0'
+      */
+      //println "TESTING: " + getType('grailsApplication')      
     def listClasses     // a List<ClassData>
     if (config.diagramType == DiagramType.DOMAIN)
       listClasses = getDomain(config) 
@@ -166,7 +245,7 @@ class UmlService {
         properties.collect { k,v ->
             // [name: k , type: (v ? v.getClass().getCanonicalName() : k.capitalize() ) ]
             // Why so many NullObject ?
-            [name: k , type:v.getClass().getCanonicalName()]            
+            [name: k , type: v ? v.getClass().canonicalName : getType(k)]
         }
      }
   
