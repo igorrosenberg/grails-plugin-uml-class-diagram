@@ -1,5 +1,5 @@
 class ToUmlGrailsPlugin {
-    def version = "0.2.4"
+    def version = "0.2.5"
     def grailsVersion = "2.0 > *"
     def pluginExcludes = [
         "web-app/**"
