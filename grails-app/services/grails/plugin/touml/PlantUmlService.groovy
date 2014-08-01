@@ -1,5 +1,6 @@
 package grails.plugin.touml
 
+import net.sourceforge.plantuml.*
 import com.nafiux.grails.classdomainuml.*
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 
@@ -10,65 +11,18 @@ class PlantUmlService {
          
     static final WEB_ROOT = 'http://www.plantuml.com/plantuml/img/'
 
-    def grailsApplication         
-          
-    private shortName(name) {
-      name.replaceAll('^.*\\.', '')      
-      }
-      
-   /**
-   * Generate custom URL to online plantUML service.
-   * @param layers of type map of <layerName, packages>, where packages is a map of <packageNames, List<Artefacts>>
-   */
-   String asUmlLayers(layers){
-        StringBuilder uml = new StringBuilder()
-        
-        uml.append('@startuml\n')
-        
-        def artefactNameList = []
-        
-        // draw classes
-        layers.each { layerName, layerPackages ->
-            uml.append('package ').append(layerName).append('s <<Rect>> {\n')
-            layerPackages.each { packageName, artefactList ->
-                // skip packageName
-                // for each class inside that package: 
-                for (artefact in artefactList) {
-                    def artefactName = shortName(artefact.className)
-                    artefactNameList << artefactName
-                    uml.append('class ').append(artefactName).append(' {\n')  // class start
-                    artefact.properties.each {
-                      uml.append(it).append('\n')
-                    }
-                    uml.append('}\n')   // class end
-                }
-            }
-            uml.append('}\n') // Package end
-        }
-        
-          // draw Relations 
-        layers.each { layerName, layerPackages ->
-          for (artefact in layerPackages.values().flatten()) {
-            artefact.properties.each() { destArtefact ->
-                    def dest = destArtefact.capitalize()
-                    if (dest in artefactNameList) {
-                        uml.append("${shortName(artefact.className)} *-- ${dest}\n")
-                      }
-            }
-          }
-        }
-        
-        uml.append('@enduml\n')
+    def grailsApplication
 
-        postProcess(uml)
-
-   }
-
+    def asWebUrl(finalUml) {
+          WEB_ROOT + finalUml
+    }
+    
     /**
-     * Generate custom URL to online plantUML service.
+     * Generate plantUML specification.
      * @param packages a map of <packageNames,List<DomainClass>>
+     * @return Compressed String
      */
-    String asUml(packages) {
+    def asUmlSpec(packages) {
 
         StringBuilder uml = new StringBuilder()
         
@@ -101,25 +55,37 @@ class PlantUmlService {
          uml.append('@enduml\n')
 
         postProcess(uml)
-        }
+    }
         
-        private String postProcess(uml) {
+    /**
+    * Convert compressed Uml Spec into PNG byte Stream
+    */
+    def asStream (finalUml) {
+          def s = new SourceStringReader(decodeAndDecompress(finalUml))
+          def os = new ByteArrayOutputStream()
+          s.generateImage(os, new FileFormatOption(FileFormat.PNG))
+          os.close()
+
+          // ready to send it over the wire! 
+          os.toByteArray()
+    }
+          
+    private String postProcess(uml) {
           uml.append(metaData())
           def finalUml = uml.toString()
           log.debug "UML: $finalUml"
-          WEB_ROOT + compressAndEncodeString(finalUml)
-        }    
-        
+          compressAndEncodeString(finalUml)
+    }           
 
         // extra provenance information
-        private String metaData() {
+    private String metaData() {
 """
 title ${grailsApplication.metadata.'app.name'} - ${grailsApplication.metadata.'app.version'}
 legend left
 Grails version: ${grailsApplication.metadata.'app.grails.version'}
 endlegend
 """
-        }
+    }
 
     /**
     * Zlib compression (compatible plantUML).
@@ -127,8 +93,20 @@ endlegend
     private String compressAndEncodeString(String str) {
         byte[] xmlBytes = str.getBytes('UTF-8')
         byte[] compressed = new CompressionZlib().compress(xmlBytes)
-        return new AsciiEncoder().encode(compressed)
+        new AsciiEncoder().encode(compressed)
     }
-     
-     
+
+    /**
+    * Zlib decompression (compatible plantUML).
+    */
+    private String decodeAndDecompress(String encoded) {
+        def compressed = new AsciiEncoder().decode(encoded)
+        def bytes = new CompressionZlib().decompress(compressed)
+        new String(bytes, "UTF-8")
+    }    
+
+    private shortName(name) {
+      name.replaceAll('^.*\\.', '')      
+      }      
+    
    }

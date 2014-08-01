@@ -2,15 +2,15 @@ grails-plugin-to-uml
 =============================
 
 Generate UML diagrams from your Grails app source code.
-
+   
 ## Features
 
   1. [ *DONE* ] Global Class diagrams for Domain  (see screenshot section below)
   1. [ *DONE* ] Diagram generation using online [PlantUML server](http://www.plantuml.com/plantuml) (ie no need to rely on plantUML.jar - no local image generation) 
   1. [ *DONE* ] Diagrams exposed as specific UmlController (http interface)
   1. [ *DONE* ] Global Class diagrams (layered) for Controllers & Services & other beans (only public methods, no javadoc comments)
-  1. [ ONGOING ] Configuration of the data exposed 
-  1. [TODO] Diagram generation in PNG via plantUML.jar from [PlantUML project](http://plantuml.sourceforge.net/)
+  1. [ *DONE* ] Diagram generation in PNG via plantUML.jar from [PlantUML project](http://plantuml.sourceforge.net/)
+  1. [ ONGOING ] Configuration of the data exposed (through an html page)
   1. [TODO] Diagrams exposed as a grails script: "grails to-uml" (cli interface)
   1. [TODO] Inclusion in standard gdoc process
   1. [TODO] Diagram generation using online [yUML](http://www.yuml.me/diagram/scruffy/class/draw) (different syntax)
@@ -29,7 +29,7 @@ Generate UML diagrams from your Grails app source code.
 * (v0.2.4) (as option = config parameter) filter fields via regexp (eg: exclude id and version)
 * (v0.2.4) (as option = config parameter) no language package names: java.lang, java.util
 * (v0.2.5) (as option = config parameter) no internal classes from grails framework
-
+* (v0.2.6) plantUml diagram spec to PNG byteStream
   
 ## Ongoing tasks  
 
@@ -38,31 +38,41 @@ Generate UML diagrams from your Grails app source code.
 
 ## Future tasks
 
-* Correct UmlService (Graph representation) ==> in the classData, the associations field is a duplicate of the properties field
-* Refactor (pass2) UmlController | UmlService | PlantUmlService |YumlService
-* (as option = config parameter) no duplication: if isAssociation, don't list in properties
+* ~~Correct UmlService (Graph representation) ==> in the classData, the associations field is a duplicate of the properties field~~
 * ~~grails introspect controllers, services >> public methods~~ (currently out of the scope of this UML plugin)
 * ~~plantUml Class diagram spec (non trivial example)~~
 * ~~plantUml Dependency diagram spec (non trivial example)~~
-* plantUml diagram spec to PNG file
-* plantUml diagram spec to PNG byteStream  
-* script : controller/services/domains >> to PNG files in target output folder
 * GSP View exposing the Config Command object
-* gdoc inclusion of the script
-* Documentation of the plugin (specifically: ConfigurationCommand, controller mode, script mode, renderers)
+* (as option = config parameter) no duplication: if isAssociation, don't list in properties
+* Refactor (pass2) UmlController | UmlService | PlantUmlService |YumlService
 * Yuml as secondary option
-  
+* Documentation of the plugin (specifically: ConfigurationCommand, controller mode, script mode, renderers)
+* plantUml diagram spec to PNG file (script mode)
+* gdoc inclusion of the script
+* script : controller/services/domains >> to PNG files in target output folder, see http://grails.org/doc/2.2.x/ref/Command%20Line/bootstrap.html
+```
+    includeTargets << grailsScript("_GrailsBootstrap")
+    loadApp()
+    for (grailsClass in grailsApp.allClasses) { println grailsClass }
+
+    configureApp()
+    Connection c = appCtx.getBean('dataSource').getConnection()
+
+    PS1: may want to investigate http://grails.org/plugin/grails-runtime-docs
+    PS2: same for this http://gr8labs.org/getting-groovy/ 
+```  
+
 ## Inspiration from 
 
 * http://grails.org/plugin/class-domain-uml
 * http://www.grails.org/plugin/create-domain-uml
+* https://github.com/trygvea/grails-class-diagram/
 * https://github.com/david-w-millar/grails-plantuml-plugin
 * https://code.google.com/p/grails-domain-uml/source/browse/#svn%2FCreateDomainUml
-
 ## Installation
 
 [TODO]
-Add `runtime ":to-uml:0.2.0"` to **BuildConfig.groovy** in plugins section (requires grails 2.0 > *).
+Add `runtime ":to-uml:0.2.6"` to **BuildConfig.groovy** in plugins section (requires grails 2.0 > *).
 
 ## Development
 
@@ -78,7 +88,10 @@ grails.project.fork = [
 grails.reload.enabled = true
 grails.plugin.location.'to-uml'="../grails-plugin-class-domain-uml"`
 ```
+
 Apart from the last line, we're basically turning off grails 2.3 forking process, which hampers auto-reload. 
+
+You may also need to add _grails.reload.enabled = true_ to ../grails-plugin-class-domain-uml/.../BuildConfig.groovy  
 
 From then on, you can modify code in the plugin, and your "web" application reflects the changes immediately.
 
@@ -86,7 +99,7 @@ From then on, you can modify code in the plugin, and your "web" application refl
 
 1. Run your grails app 
 2. Point your web browser to `http://localhost:8080/yourApp/uml`
-3. (optionnally) 
+3. (more specifically) 
 ```
 curl -v -H "Content-Type: application/json" -d '{"fieldFilterRegexps"=["^id$","^version$"],"classFilterRegexps"=[".*City"],"diagramType"="DOMAIN","showCanonicalJavaClassNames":false}' http://localhost:8080/yourApp/uml 
 ```
