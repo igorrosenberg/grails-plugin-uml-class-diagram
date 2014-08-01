@@ -1,5 +1,7 @@
 package grails.plugin.touml
 
+import static grails.plugin.touml.Constants.*
+
 import com.nafiux.grails.classdomainuml.*
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 
@@ -8,22 +10,40 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
  */
 class UmlService {
 
-  static final UNKNOWN = 'UnknownType'
-  static final GRAILS_ARTEFACTS  = 'JQueryService,grails.plugin.cache.GrailsCacheAdminService,asset.pipeline.AssetsController,asset.pipeline.AssetProcessorService,grails.plugin.databasemigration.DbdocController'.split(',')
-           
-   static final ARTEFACTS  = 
-   [
-   Controller:   
-      'defaultAction,instanceControllerTagLibraryApi,controllerUri,instanceControllerTagLibraryApi,session,servletContext,controllerClass,response,controllerName,webRequest,assetProcessorService,grailsAttributes,instanceControllersRestApi,applicationContext,flash,class,actionName,actionUri,modelAndView,pluginContextPath,errors,instanceControllersApi,params,chainModel,grailsApplication,request,controllerNamespace',
-    Service:'class'
-    ].collectEntries{ k, v -> [k, v.split(',')] }
-
    def grailsApplication
    
    def plantUmlService
    
    def yUmlService
 
+  /**
+  * Expose UML.   
+  * @return a redirection URL.
+  */
+  def redirect(config) {
+    def map = getPackageMap(config)
+     def redirectUrl
+     switch (config.renderingEngine) {
+         case RenderingEngine.LOCAL_PLANT_UML: 
+            def umlSpec = plantUmlService.asUmlSpec(map)
+            redirectUrl  = "/uml/localPlantUml/$umlSpec"
+            break
+         case RenderingEngine.WEB_PLANT_UML: 
+            def umlSpec = plantUmlService.asUmlSpec(map)
+            redirectUrl = plantUmlService.asWebUrl(umlSpec)
+            break
+         default: 
+            throw new IOException("${config.renderingEngine} not implemented")  
+      }
+  }  
+
+  /**
+  * Convert UML spec to PNG byte stream.
+  */
+  def localPlantUml(umlSpec) {
+    plantUmlService.asStream(umlSpec)
+  }
+ 
   /**
   * @param classList  List<ClassData> 
   * TODO heavy optimization probably possible here
@@ -71,8 +91,6 @@ class UmlService {
           }.sort {it.name}
       }
       
-          
-
       // shorten all Java class names  
       if (!config.showCanonicalJavaClassNames) {
         classList.each { classData ->
@@ -88,7 +106,10 @@ class UmlService {
    
    }
 
-    String getType(beanName) { 
+    /**
+    * @return String, the (possibly) fully qualified class name of the bean.
+    */
+    private getType(beanName) { 
         // FIXME sometimes artefact.propertyName is capitalized, sometimes not ?!
         def type = UNKNOWN 
         beanName = beanName.capitalize()
@@ -106,11 +127,11 @@ class UmlService {
         type
     } 
     
-  /**
-  * Expose UML. 
-  * @return a String to be read as a URL to an online rendering service.
-  */
-  String generate(config) {
+   /**
+    * Find all classes to expose in diagram. 
+    * @return a Map<packageName, listClasses>.
+    */   
+  private getPackageMap(config) {
     def listClasses     // a List<ClassData>
     if (config.diagramType == DiagramType.DOMAIN)
       listClasses = getDomain(config) 
@@ -126,10 +147,9 @@ class UmlService {
           }
         map[packageName].add(it)
     }
+    map
+  }
     
-    plantUmlService.asUml(map)
-  }  
-  
   /**
   * Introspect all domain classes. 
   * @return a List<ClassData> 
