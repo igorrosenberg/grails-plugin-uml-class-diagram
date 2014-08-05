@@ -1,14 +1,23 @@
+includeTargets << grailsScript('_GrailsInit')
+includeTargets << grailsScript('_GrailsBootstrap')
 
-Ant.property(environment:"env")                             
-grailsHome = Ant.antProject.properties."env.GRAILS_HOME"
+target(toUml: 'Generate UML diagrams from grails code') {
 
-includeTargets << grailsScript("Init")
-includeTargets << new File ( "${grailsHome}/scripts/Bootstrap.groovy" )
-
-target(toUml: "Generate UML diagrams from code") {
-    depends(clean,compile,loadApp)
-    def umlService = .... // how do I get an instance ?
-    umlService.generate2()
+  depends(configureProxy, packageApp, classpath, loadApp, configureApp)
+  def umlService = appCtx.getBean('umlService')
+  
+  def conf = new grails.plugin.touml.ConfigurationCommand()
+  def url = umlService.redirect(conf)
+  
+  def stream = umlService.localPlantUml(url.replaceAll('^.*/',''))
+  if (stream) {
+      def outFile = File.createTempFile('output_', '.png')
+      println 'Output goes to ' + outFile
+      outFile.append(stream) 
+      println 'Output done '
+  } else {
+      println 'No data produced !?'
+  }
 }
 
 setDefaultTarget(toUml)
