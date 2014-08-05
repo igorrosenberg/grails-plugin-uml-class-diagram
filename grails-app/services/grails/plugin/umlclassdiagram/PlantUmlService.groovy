@@ -1,4 +1,4 @@
-package grails.plugin.touml
+package grails.plugin.umlclassdiagram
 
 import net.sourceforge.plantuml.*
 import com.nafiux.grails.classdomainuml.*

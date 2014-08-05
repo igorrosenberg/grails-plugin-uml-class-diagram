@@ -1,6 +1,6 @@
-package grails.plugin.touml
+package grails.plugin.umlclassdiagram
 
-import static grails.plugin.touml.Constants.*
+import static grails.plugin.umlclassdiagram.Constants.*
 
 import com.nafiux.grails.classdomainuml.*
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
