@@ -1,23 +1,27 @@
 includeTargets << grailsScript('_GrailsInit')
 includeTargets << grailsScript('_GrailsBootstrap')
 
-target(toUml: 'Generate UML diagrams from grails code') {
+USAGE = """
+to-uml 
+There are no parameters.
+"""
+
+target(default: 'Generate UML diagrams from grails code') {
 
   depends(configureProxy, packageApp, classpath, loadApp, configureApp)
   def umlService = appCtx.getBean('umlService')
   
-  def conf = new grails.plugin.touml.ConfigurationCommand()
+  def conf = classLoader.loadClass('grails.plugin.umlclassdiagram.ConfigurationCommand').newInstance() 
+       // class not found issues with  = new grails.plugin.umlclassdiagram.ConfigurationCommand()
   def url = umlService.redirect(conf)
   
   def stream = umlService.localPlantUml(url.replaceAll('^.*/',''))
   if (stream) {
       def outFile = File.createTempFile('output_', '.png')
-      println 'Output goes to ' + outFile
+      grailsConsole.updateStatus "Writing to $outFile"
       outFile.append(stream) 
-      println 'Output done '
+      grailsConsole.updateStatus "UML written to $outFile"
   } else {
-      println 'No data produced !?'
+      grailsConsole.error 'No data produced !?'
   }
 }
-
-setDefaultTarget(toUml)
