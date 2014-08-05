@@ -1,5 +1,5 @@
-grails-plugin-to-uml
-=============================
+grails-plugin-uml-class-diagram
+===============================
 
 Generate UML diagrams from your Grails app source code.
    
@@ -9,12 +9,12 @@ Generate UML diagrams from your Grails app source code.
   1. [ *DONE* ] Diagram generation using online [PlantUML server](http://www.plantuml.com/plantuml) (ie no need to rely on plantUML.jar - no local image generation) 
   1. [ *DONE* ] Diagrams exposed as specific UmlController (http interface)
   1. [ *DONE* ] Global Class diagrams (layered) for Controllers & Services & other beans (only public methods, no javadoc comments)
+  1. [ *DONE* ] Diagrams exposed as a grails script: "grails to-uml" (cli interface)
   1. [ *DONE* ] Diagram generation in PNG via plantUML.jar from [PlantUML project](http://plantuml.sourceforge.net/)
-  1. [ ONGOING ] Configuration of the data exposed (through an html page)
-  1. [TODO] Diagrams exposed as a grails script: "grails to-uml" (cli interface)
-  1. [TODO] Inclusion in standard gdoc process
-  1. [TODO] Diagram generation using online [yUML](http://www.yuml.me/diagram/scruffy/class/draw) (different syntax)
-  1. ~~[TODO] Document specifically webapp interfaces (public methods of Controllers, with javadoc, input/output spec?)~~ (currently out of the scope of this UML plugin)
+  1. [ ONGOING ] Configuration of the data exposed (through an html page, and/or as config properties)
+  1. [ TODO ] Inclusion in standard gdoc process
+  1. [ TODO ] Diagram generation using online [yUML](http://www.yuml.me/diagram/scruffy/class/draw) (different syntax)
+  1. ~~[ TODO ] Document specifically webapp interfaces (public methods of Controllers, with javadoc, input/output spec?)~~ (currently out of the scope of this UML plugin)
   
 ## Finished tasks
 
@@ -29,6 +29,7 @@ Generate UML diagrams from your Grails app source code.
 * (v0.2.5) Config options (showGrailsInternals)
 * (v0.2.6) plantUml diagram spec to PNG byteStream, 
 * (v0.2.6) Config options (renderingEngine)
+* (v0.3.0) plantUml diagram spec to PNG file (script mode)
   
 ## Ongoing tasks  
 
@@ -43,17 +44,13 @@ Generate UML diagrams from your Grails app source code.
 * ~~plantUml Class diagram spec (non trivial example)~~
 * ~~plantUml Dependency diagram spec (non trivial example)~~
 * GSP View exposing the Config Command object
+* Script builds a Config Command object (script parameters and/or config options)
 * Config option: no duplication = if isAssociation, don't list in properties
 * Refactor (pass2) UmlController | UmlService | PlantUmlService |YumlService
 * Yuml as secondary option
 * Documentation of the plugin (specifically: ConfigurationCommand, controller mode, script mode, rendering engines)
-* plantUml diagram spec to PNG file (script mode)
 * gdoc inclusion of the script
-* publish plugin on official Grails Plugin page
-* script : controller/services/domains >> to PNG files in target output folder, 
-   * see http://grails.org/doc/2.2.x/ref/Command%20Line/bootstrap.html, 
-   * see http://grails.org/plugin/grails-runtime-docs, 
-   * see http://gr8labs.org/getting-groovy/  
+* script : controller/services/domains >> to PNG files in target output folder 
 ```
     includeTargets << grailsScript("_GrailsBootstrap")
     loadApp()
@@ -73,8 +70,7 @@ Generate UML diagrams from your Grails app source code.
 
 ## Installation
 
-[ TODO ] (publish plugin)
-Add `runtime ":to-uml:0.3.0"` to **BuildConfig.groovy** in plugins section (requires grails 2.0 > *).
+Add `runtime ":uml-class-diagram:0.3.0"` to *BuildConfig.groovy* in plugins section (requires grails 2.0 > \*).
 
 ## Development
 
@@ -88,16 +84,16 @@ grails.project.fork = [
   console: false , 
 ]
 grails.reload.enabled = true
-grails.plugin.location.'to-uml'="../grails-plugin-class-domain-uml"`
+grails.plugin.location.'uml-class-diagram'="../grails-plugin-uml-class-diagram"`
 ```
 
 Apart from the last line, we're basically turning off grails 2.3 forking process, which hampers auto-reload. 
 
-You may also need to add _grails.reload.enabled = true_ to ../grails-plugin-class-domain-uml/.../BuildConfig.groovy  
+You may also need to add _grails.reload.enabled = true_ to ../grails-plugin-uml-class-diagram/.../BuildConfig.groovy  
 
 From then on, you can modify code in the plugin, and your "web" application reflects the changes immediately.
 
-## Usage
+## Usage
 
 1. Run your grails app 
 2. Point your web browser to `http://localhost:8080/yourApp/uml`
@@ -106,7 +102,7 @@ From then on, you can modify code in the plugin, and your "web" application refl
 curl -v -H "Content-Type: application/json" -d '{"fieldFilterRegexps"=["^id$","^version$"],"classFilterRegexps"=[".*City"],"diagramType"="DOMAIN","showCanonicalJavaClassNames":false}' http://localhost:8080/yourApp/uml 
 ```
 
-## Screenshots
+## Screenshots
 
 ![Domain example](src/gdoc/0.2.5-domain.png)
 
