@@ -1,14 +1,27 @@
+includeTargets << grailsScript('_GrailsInit')
+includeTargets << grailsScript('_GrailsBootstrap')
 
-Ant.property(environment:"env")                             
-grailsHome = Ant.antProject.properties."env.GRAILS_HOME"
+USAGE = """
+to-uml 
+There are no parameters.
+"""
 
-includeTargets << grailsScript("Init")
-includeTargets << new File ( "${grailsHome}/scripts/Bootstrap.groovy" )
+target(default: 'Generate UML diagrams from grails code') {
 
-target(toUml: "Generate UML diagrams from code") {
-    depends(clean,compile,loadApp)
-    def umlService = .... // how do I get an instance ?
-    umlService.generate2()
+  depends(configureProxy, packageApp, classpath, loadApp, configureApp)
+  def umlService = appCtx.getBean('umlService')
+  
+  def conf = classLoader.loadClass('grails.plugin.umlclassdiagram.ConfigurationCommand').newInstance() 
+       // class not found issues with  = new grails.plugin.umlclassdiagram.ConfigurationCommand()
+  def url = umlService.redirect(conf)
+  
+  def stream = umlService.localPlantUml(url.replaceAll('^.*/',''))
+  if (stream) {
+      def outFile = File.createTempFile('output_', '.png')
+      grailsConsole.updateStatus "Writing to $outFile"
+      outFile.append(stream) 
+      grailsConsole.updateStatus "UML written to $outFile"
+  } else {
+      grailsConsole.error 'No data produced !?'
+  }
 }
-
-setDefaultTarget(toUml)

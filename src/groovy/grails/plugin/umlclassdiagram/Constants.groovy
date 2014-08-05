@@ -1,4 +1,4 @@
-package grails.plugin.touml
+package grails.plugin.umlclassdiagram
 
 class Constants {
 

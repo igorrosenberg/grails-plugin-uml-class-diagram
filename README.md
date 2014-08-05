@@ -34,6 +34,7 @@ Generate UML diagrams from your Grails app source code.
 
 * Config options (showCanonicalClassNames duplicateFieldAndArrow)
 * Refactor UmlService (too much duplication) ==> Domain vs Controller/Service should not be separate methods
+  * see grailsApplication.serviceClasses() , can that help ?
 
 ## Future tasks
 
@@ -72,7 +73,7 @@ Generate UML diagrams from your Grails app source code.
 
 ## Installation
 
-[TODO] (publish plugin)
+[ TODO ] (publish plugin)
 Add `runtime ":to-uml:0.3.0"` to **BuildConfig.groovy** in plugins section (requires grails 2.0 > *).
 
 ## Development
