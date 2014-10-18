@@ -84,7 +84,7 @@ grails.project.fork = [
   console: false , 
 ]
 grails.reload.enabled = true
-grails.plugin.location.'uml-class-diagram'="../grails-plugin-uml-class-diagram"`
+grails.plugin.location.'uml-class-diagram'="../grails-plugin-uml-class-diagram"
 ```
 
 Apart from the last line, we're basically turning off grails 2.3 forking process, which hampers auto-reload. 
