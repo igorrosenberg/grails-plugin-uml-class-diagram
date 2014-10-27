@@ -5,16 +5,17 @@ Generate UML diagrams from your Grails app source code.
    
 ## Features
 
-  1. [ *DONE* ] Global Class diagrams for Domain  (see screenshot section below)
-  1. [ *DONE* ] Diagram generation using online [PlantUML server](http://www.plantuml.com/plantuml) (ie no need to rely on plantUML.jar - no local image generation) 
-  1. [ *DONE* ] Diagrams exposed as specific UmlController (http interface)
-  1. [ *DONE* ] Global Class diagrams (layered) for Controllers & Services & other beans (only public methods, no javadoc comments)
-  1. [ *DONE* ] Diagrams exposed as a grails script: "grails to-uml" (cli interface)
-  1. [ *DONE* ] Diagram generation in PNG via plantUML.jar from [PlantUML project](http://plantuml.sourceforge.net/)
-  1. [ ONGOING ] Configuration of the data exposed (through an html page, and/or as config properties)
-  1. [ TODO ] Inclusion in standard gdoc process
-  1. [ TODO ] Diagram generation using online [yUML](http://www.yuml.me/diagram/scruffy/class/draw) (different syntax)
-  1. ~~[ TODO ] Document specifically webapp interfaces (public methods of Controllers, with javadoc, input/output spec?)~~ (currently out of the scope of this UML plugin)
+  1. :white_check_mark: Global Class diagrams for Domain  (see screenshot section below)
+  1. :white_check_mark: Diagram generation using online [PlantUML server](http://www.plantuml.com/plantuml) (ie no need to rely on plantUML.jar - no local image generation) 
+  1. :white_check_mark: Diagrams exposed as specific UmlController (http interface)
+  1. :white_check_mark: Global Class diagrams (layered) for Controllers & Services & other beans (only public methods, no javadoc comments)
+  1. :white_check_mark: Diagrams exposed as a grails script: "grails to-uml" (cli interface)
+  1. :white_check_mark: Diagram generation in PNG via plantUML.jar from [PlantUML project](http://plantuml.sourceforge.net/)
+  1. :soon: Configuration of the data exposed (through config properties)
+  1. :soon: Configuration of the data exposed (through an html page)
+  1. :clock9: Inclusion in standard gdoc process
+  1. :clock9: Diagram generation using online [yUML](http://www.yuml.me/diagram/scruffy/class/draw) (different syntax)
+  1. :no_entry: (Out of the scope of this plugin) ~~Document specifically webapp interfaces (public methods of Controllers, with javadoc, input/output spec?)~~ 
   
 ## Finished tasks
 
@@ -30,6 +31,7 @@ Generate UML diagrams from your Grails app source code.
 * (v0.2.6) plantUml diagram spec to PNG byteStream, 
 * (v0.2.6) Config options (renderingEngine)
 * (v0.3.0) plantUml diagram spec to PNG file (script mode)
+* (v0.3.1) published as public grails plugin, see http://grails.org/plugin/uml-class-diagram
   
 ## Ongoing tasks  
 
@@ -70,7 +72,7 @@ Generate UML diagrams from your Grails app source code.
 
 ## Installation
 
-Add `runtime ":uml-class-diagram:0.3.0"` to *BuildConfig.groovy* in plugins section (requires grails 2.0 > \*).
+Add `runtime ":uml-class-diagram:0.3.1"` to *BuildConfig.groovy* in plugins section (requires grails 2.0 > \*).
 
 ## Development
 
