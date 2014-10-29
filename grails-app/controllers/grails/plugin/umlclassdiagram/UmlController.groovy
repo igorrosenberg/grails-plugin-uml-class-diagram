@@ -3,10 +3,34 @@ package grails.plugin.umlclassdiagram
 class UmlController {
 
     def umlService
-       
-    def index(ConfigurationCommand config) {
-      def umlURL = umlService.redirect(config)
-      log.info 'user redirected'
+
+    static allowedMethods = [draw: "POST"]
+
+    def index() {
+        def instance = new ConfigurationCommand()
+	bindData(instance, params)
+        render (view:'index', model:[configurationCommandInstance: instance]) 
+    }
+
+    def draw(ConfigurationCommand configurationCommandInstance) {
+	if (configurationCommandInstance == null) {
+		request.withFormat {
+		    form multipartForm {
+		        flash.message = message(code: 'default.not.found.message', args: [message(code: 'configurationCommand.label', default: 'ConfigurationCommand'), params.id])
+		        redirect action: "index", method: "GET"
+		    }
+		    '*'{ render status: NOT_FOUND }
+		}
+        	return
+        }
+
+        if (configurationCommandInstance.hasErrors()) {
+            respond configurationCommandInstance.errors, view:'index'
+            return
+        }
+
+      def umlURL = umlService.redirect(configurationCommandInstance)
+      log.info "user redirected to ${umlURL?.size() > 30 ? umlURL[0..30] + '...' : umlURL}"
       redirect url:umlURL     
     }
 
@@ -15,7 +39,8 @@ class UmlController {
       log.info 'PNG byte stream sent to user '
       render file: stream, contentType: 'image/png'          
     }
- }
+ 
+}
 
 /**
 * Command object for Configuration options
