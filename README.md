@@ -78,6 +78,8 @@ Add `runtime ":uml-class-diagram:0.3.1"` to *BuildConfig.groovy* in plugins sect
 
 ## Development
 
+The steps described below are available in https://github.com/igorrosenberg/test-grails-app/tree/local-uml-plugin
+
 * Create a web-app: `grails create-app web` 
 * Add in BuildConfig of this new projet (adjust path as needed): 
 ```
