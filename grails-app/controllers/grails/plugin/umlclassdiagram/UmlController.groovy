@@ -53,10 +53,10 @@ class ConfigurationCommand {
   /** Filters restricting the visibility of classes */
   String [] classFilterRegexps = new String[0]
 
-  /** Short Class names for most used Java classes (from java API) */
+  /** Short Class names for most used Java classes (from the java API) */
   boolean showCanonicalJavaClassNames = false
 
-  /** Classes provided by the Grails framework */
+  /** Controllers and Services provided by the Grails framework */
   boolean showGrailsInternalClasses = false
 
   boolean filterGrailsFields = true
@@ -66,9 +66,9 @@ class ConfigurationCommand {
   RenderingEngine renderingEngine = RenderingEngine.LOCAL_PLANT_UML
 
   /** Canonical or Short Class names for all fileds, not restricted to java API*/
-  // NOT READY boolean showCanonicalClassNames
+  // TODO boolean showCanonicalClassNames
   /** Properties which generate an arrow also listed in the origin class */
-  // NOT READY boolean duplicateFieldAndArrow
+  // TODO boolean duplicateFieldAndArrow
   
     static constraints = {
         fieldFilterRegexps nullable: true

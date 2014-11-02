@@ -51,10 +51,13 @@ class UmlService {
    private customize(classList, config) {
    
       if (!config.showGrailsInternalClasses) {      
-        // add grails internals to list of regexps
-        config.classFilterRegexps += GRAILS_ARTEFACTS
+        // add grails internals to list of regexps 
+	// TODO could be optimized via groovy-ninjutsu	
+	config.classFilterRegexps = config.classFilterRegexps ?: []
+	for (filter in GRAILS_ARTEFACTS)		
+		config.classFilterRegexps += filter
       }      
-      
+
       // Filter classes based on regexps
       classList = classList.findAll { classData ->
         // OPTIMIZE as return ! config.classFilterRegexps.find {regexp  -> classData.className.matches(regexp) }

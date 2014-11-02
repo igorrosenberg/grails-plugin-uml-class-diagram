@@ -71,7 +71,7 @@ function duplicatePreviousField(element) {
 
 <div class="fieldcontain ${hasErrors(bean: configurationCommandInstance, field: 'showGrailsInternalClasses', 'error')} ">
 	<label for="showGrailsInternalClasses">
-		<g:message code="configurationCommand.showGrailsInternalClasses.label" default="Show Grails Internal Classes" />
+		<g:message code="configurationCommand.showGrailsInternalClasses.label" default="Show Grails Internals" />
 		
 	</label>
 	<g:checkBox name="showGrailsInternalClasses" value="${configurationCommandInstance?.showGrailsInternalClasses}" />
