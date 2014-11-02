@@ -1,0 +1,12 @@
+The data shown in the UML class diagrams is configurable.
+
+h3. Configuration options
+
+* @fieldFilterRegexps@: a list of String filters (interpreted as regular expressions) restricting the visibility of fields within classes, for example '^id$'
+* @classFilterRegexps@: a list of String filters (interpreted as regular expressions) restricting the visibility of classes, for example '.*Race'
+* @showCanonicalJavaClassNames@: boolean, removing the package prefix to Java classes (from the java API) 
+* @showGrailsInternalClasses@: boolean, removing Controllers and Services provided by the Grails framework
+* @filterGrailsFields@: boolean
+* @diagramType@: either 'DOMAIN' (uml class diagrams of the Grails Domain objects) or 'LAYERS' (uml class diagrams of the Grails Controllers and Services)
+* @renderingEngine@: either 'LOCAL_PLANT_UML' (generate diagrams via embeded plantUML JAR), or 'WEB_PLANT_UML'  (generate diagrams via online plantUML service)
+

@@ -1,0 +1,5 @@
+The UML diagrams can be generated before runtime 
+{code}
+grails uml-class-diagram
+{code}
+

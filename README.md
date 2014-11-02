@@ -115,9 +115,9 @@ curl -v -H "Content-Type: application/json" -d '{
 
 ## Screenshots
 
-![Domain example](src/gdoc/0.2.5-domain.png)
+![Domain example](src/docs/images/0.2.5-domain.png)
 
-![Layers example](src/gdoc/0.2.5-layers.png)
+![Layers example](src/docs/images/0.2.5-layers.png)
 
-![Wizard example](src/gdoc/0.3.2-wizard.png)
+![Wizard example](src/docs/images/0.3.2-wizard.png)
 

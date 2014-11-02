@@ -1,0 +1,19 @@
+This plugins allows to generate UML diagrams for your Grails application.
+
+Rendering is done via the integrated plantUML:http://plantuml.sourceforge.net/ library (without sending data on the internet). 
+
+The diagrams can be generated when the webapp is running
+{code}
+http://server:port/webapp/uml
+{code}
+
+Or before runtime 
+{code}
+grails uml-class-diagram
+{code}
+
+
+The plugin is released under the "Apache License 2.0":http://www.apache.org/licenses/LICENSE-2.0.html license, source code is "available":http://grails.org/plugin/uml-class-diagram .
+
+The data shown in the UML class diagrams is configurable.
+
