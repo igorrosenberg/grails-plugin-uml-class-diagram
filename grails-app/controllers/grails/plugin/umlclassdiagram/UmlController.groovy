@@ -83,3 +83,4 @@ enum DiagramType {
 enum RenderingEngine {
     LOCAL_PLANT_UML, WEB_PLANT_UML, YUML
 }
+
