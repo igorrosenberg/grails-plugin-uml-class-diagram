@@ -2,7 +2,25 @@ grails-plugin-uml-class-diagram
 ===============================
 
 Generate UML diagrams from your Grails app source code.
-   
+
+Documentation:  
+
+* [User Guide](http://igorrosenberg.github.io/grails-plugin-uml-class-diagram/)
+* [Grails Plugin shared with the Grails Community](http://grails.org/plugin/uml-class-diagram) 
+* [Source code on GitHub](https://github.com/igorrosenberg/grails-plugin-uml-class-diagram/) (this page) 
+
+## Screenshots
+
+![Wizard example](src/docs/images/0.3.2-wizard.png)
+
+![Domain example](src/docs/images/0.2.5-domain.png)
+
+![Layers example](src/docs/images/0.2.5-layers.png)
+
+## Usage
+
+See the [User Guide](http://igorrosenberg.github.io/grails-plugin-uml-class-diagram/)
+
 ## Features
 
   1. :white_check_mark: Global Class diagrams for Domain  (see screenshot section below)
@@ -39,12 +57,14 @@ Generate UML diagrams from your Grails app source code.
   
 ## Ongoing tasks  
 
+
+* /!\ separate README.md (dev) from src/docs/guide (usage)
 * Script builds a Config Command object (script parameters and/or config options)
 * Config options (showCanonicalClassNames duplicateFieldAndArrow)
 * Config option: no duplication = if isAssociation, don't list in properties
 * Documentation of the plugin (specifically: ConfigurationCommand, controller mode, script mode, rendering engines) - see gh-pages git branch
 
-## Future tasks
+## Future tasks (help needed!)
 
 * ~~Correct UmlService (Graph representation) ==> in the classData, the associations field is a duplicate of the properties field~~
 * ~~grails introspect controllers, services >> public methods~~ (currently out of the scope of this UML plugin)
@@ -64,14 +84,6 @@ Generate UML diagrams from your Grails app source code.
     configureApp()
     Connection c = appCtx.getBean('dataSource').getConnection()
 ```  
-
-## Inspiration from 
-
-* http://grails.org/plugin/class-domain-uml
-* http://www.grails.org/plugin/create-domain-uml
-* https://github.com/trygvea/grails-class-diagram/
-* https://github.com/david-w-millar/grails-plantuml-plugin
-* https://code.google.com/p/grails-domain-uml/source/browse/#svn%2FCreateDomainUml
 
 ## Installation
 
@@ -100,43 +112,12 @@ You may also need to add _grails.reload.enabled = true_ to ../grails-plugin-uml-
 
 From then on, you can modify code in the plugin, and your "web" application reflects the changes immediately.
 
-## Usage
+## Inspiration from 
 
-1. Exposed on the command line
-
-```
-grails to-uml
-```
-You may add parameters on the command line, or set your prefered default in Config.groovy
-```
-grails.plugin.'uml-class-diagram'.fieldFilterRegexps=['^id$','^version$']
-grails.plugin.'uml-class-diagram'.classFilterRegexps=['.*City'],
-grails.plugin.'uml-class-diagram'.diagramType='DOMAIN',
-grails.plugin.'uml-class-diagram'.showCanonicalJavaClassNames=false
-```
-
-2. Exposed directly by your grails app 
-
-A web interface is available. Point your web browser to `http://localhost:8080/yourApp/uml`, 
-which will allow you to choose the options affecting the diagram rendered. See the first screenshot below
-
-
-You may also directly request the diagram via cURL: 
-```
-curl -v -H "Content-Type: application/json" -d '{
-  "fieldFilterRegexps"=["^id$","^version$"],
-  "classFilterRegexps"=[".*City"],
-  "diagramType"="DOMAIN",
-  "showCanonicalJavaClassNames":false
-}' http://localhost:8080/yourApp/uml/draw
-```
-
-## Screenshots
-
-![Wizard example](src/docs/images/0.3.2-wizard.png)
-
-![Domain example](src/docs/images/0.2.5-domain.png)
-
-![Layers example](src/docs/images/0.2.5-layers.png)
+* http://grails.org/plugin/class-domain-uml
+* http://www.grails.org/plugin/create-domain-uml
+* https://github.com/trygvea/grails-class-diagram/
+* https://github.com/david-w-millar/grails-plantuml-plugin
+* https://code.google.com/p/grails-domain-uml/source/browse/#svn%2FCreateDomainUml
 
 

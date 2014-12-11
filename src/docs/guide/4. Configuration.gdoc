@@ -1,4 +1,5 @@
-The data shown in the UML class diagrams is configurable.
+The data shown in the UML class diagrams is configurable, the complete list of options 
+being exposed by the ConfigurationCommand object.
 
 h3. Configuration options
 

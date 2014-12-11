@@ -1,0 +1,8 @@
+h3. Domain classes for a trivial application
+
+!0.2.5-layers.png!
+
+h3. Controller/Service relations within the UmlClassDiagram plugin itself
+
+!0.2.5-domain.png!
+
