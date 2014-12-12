@@ -1,0 +1,21 @@
+						</ul>
+
+						<p>The source code of the plugin is available on 
+							<a href="https://github.com/igorrosenberg/grails-plugin-uml-class-diagram/">GitHub</a>.</p>
+												                                               
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div id="footer">            
+            Developed by <a href='http://igor.rosenberg.free.fr/'>Igor Rosenberg</a>.
+        </div>
+
+
+
+		<script type="text/javascript" src="0.3.3/js/docs.js"></script>
+    </body>
+</html>
+
+
