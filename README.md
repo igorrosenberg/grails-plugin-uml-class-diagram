@@ -6,7 +6,7 @@ Generate UML diagrams from your Grails app source code.
 Documentation:  
 
 * [User Guide](http://igorrosenberg.github.io/grails-plugin-uml-class-diagram/)
-* [Grails Plugin shared with the Grails Community](http://grails.org/plugin/uml-class-diagram) 
+* [Plugin shared with the Grails Community](http://grails.org/plugin/uml-class-diagram) 
 * [Source code on GitHub](https://github.com/igorrosenberg/grails-plugin-uml-class-diagram/) (this page) 
 
 ## Screenshots
@@ -54,6 +54,7 @@ See the [User Guide](http://igorrosenberg.github.io/grails-plugin-uml-class-diag
 * (v0.3.1) published as public grails plugin, see http://grails.org/plugin/uml-class-diagram
 * (v0.3.2) GSP View exposing the Config Command object
 * (v0.3.3) grails docs, see [github gh-pages](http://igorrosenberg.github.io/grails-plugin-uml-class-diagram/)
+* (v0.3.4) moved extra info from readme to user guide, see [github gh-pages](http://igorrosenberg.github.io/grails-plugin-uml-class-diagram/)
   
 ## Ongoing tasks  
 
