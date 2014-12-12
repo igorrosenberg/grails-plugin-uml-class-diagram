@@ -1,4 +1,4 @@
-The grails *uml-class-diagram* plugin generates UML diagrams from the Grails application source code.
+The "uml-class-diagram grails plugin":http://grails.org/plugin/uml-class-diagram generates UML diagrams from the Grails application source code.
 
 Rendering is done via the integrated "plantUML":http://plantuml.sourceforge.net/ library (possibly without sending data on the internet). 
 

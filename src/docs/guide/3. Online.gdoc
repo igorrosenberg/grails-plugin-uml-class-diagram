@@ -5,7 +5,7 @@ http://server:port/webapp/uml
 
 h3. HTML Form
 
-An HTML form allows to configure the diagram data, reachable through the previous URL:
+The diagram data may be configured through an HTML form, reachable through the previous URL.
 
 !0.3.2-wizard.png!
 
@@ -15,7 +15,7 @@ in the default case an image as rendered by "plantUML":http://plantuml.sourcefor
 h3. HTTP access
 
 The diagrams are also available without using the online form, 
-by smply executing an HTTP POST request on the 'draw' method, for example:
+by simply executing an HTTP POST request on the 'draw' controller action, for example:
 
 {code}
 curl -v -H "Content-Type: application/json" -d '{

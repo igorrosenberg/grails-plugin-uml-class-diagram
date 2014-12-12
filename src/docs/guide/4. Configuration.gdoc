@@ -9,5 +9,7 @@ h3. Configuration options
 * @showGrailsInternalClasses@: boolean, removing Controllers and Services provided by the Grails framework
 * @filterGrailsFields@: boolean
 * @diagramType@: either 'DOMAIN' (uml class diagrams of the Grails Domain objects) or 'LAYERS' (uml class diagrams of the Grails Controllers and Services)
-* @renderingEngine@: either 'LOCAL_PLANT_UML' (generate diagrams via embeded plantUML JAR), or 'WEB_PLANT_UML'  (generate diagrams via online plantUML service)
+* @renderingEngine@: 
+** either 'LOCAL_PLANT_UML' (generate diagrams via embeded plantUML JAR), 
+** or 'WEB_PLANT_UML'  (generate diagrams via online plantUML service)
 
