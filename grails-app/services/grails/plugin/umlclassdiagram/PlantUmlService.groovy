@@ -9,59 +9,83 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
  */
 class PlantUmlService {
          
-    static final WEB_ROOT = 'http://www.plantuml.com/plantuml/img/'
-
     def grailsApplication
-
-    def asWebUrl(finalUml) {
-          WEB_ROOT + finalUml
-    }
-    
+         
     /**
-     * Generate plantUML specification.
-     * @param packages a map of <packageNames,List<DomainClass>>
-     * @return Compressed String
+     * Add to StringBuilder the PlantUML syntax describing the properties.
+     * @param configurationCommand: user preferences
      */
-    def asUmlSpec(packages) {
+    private void drawProperties(propertiesMap, StringBuilder uml, configurationCommand) {
+      propertiesMap.each { propertyName, classifiers ->
+          uml.append(propertyName)
+          if (classifiers.type) {
+            uml.append(': ').append(classifiers.type)
+            if (classifiers.length) {
+              uml.append('[').append(classifiers.length).append(']').
+            }
+          }
+          // TODO: add decorators for properties index, abstract, static
+          uml.append('\n')
+      }             
+    }
 
-        StringBuilder uml = new StringBuilder()
-        
-        uml.append('@startuml\n')       
-
-        // draw Packages
-        packages.each { packageName, classList ->
+    /**
+     * Add to StringBuilder the PlantUML syntax describing the packages.
+     * @param configurationCommand: user preferences
+     */
+    private void drawPackages(packageMap, StringBuilder uml, configurationCommand) {
+        model.partition.each { packageName, classMap ->
             uml.append('package ').append(packageName).append(' <<Rect>> {\n')
-            // Each model of package
-            for(model in classList) {
-                uml.append('class ').append(model.className).append(' {\n') 
-                model.properties.each {
-                    uml.append(it.name).append(' : ').append(it.type).append('\n')
-                  }
+            // draw classes
+            classMap.each { className, propertiesMap ->
+                uml.append('class ').append(className).append(' {\n') 
+                drawProperties(propertiesMap, uml, configurationCommand) 
                 uml.append('}\n')   // class end
             }
             uml.append('}\n') // Package end
         }
-        
-        // draw Relations 
-        for(model in packages.values().flatten()) {
-          model.associations.each() { relation ->
-                  ['modelName','left','type','right','typeName'].each { key ->
-                      uml.append(relation[key]).append(' ')
-                   }
-                   uml.append(': ').append(relation['assocName']).append('\n')
-          }
+    }
+
+    /**
+     * Add to StringBuilder the PlantUML syntax describing the relations.
+     * @param configurationCommand: user preferences
+     */
+    private void drawRelations(relationList, StringBuilder uml, configurationCommand) {
+        relationList.each() { relation ->
+            uml.append(from.package)
+            uml.append('.')
+            uml.append(from.class)
+            uml.append(' "')
+            uml.append(from.field)
+            uml.append('" --> "')
+            uml.append(to.field)
+            uml.append('" ')
+            uml.append(to.package)
+            uml.append('.')
+            uml.append(to.class)
+            uml.append('\n')
         }
+    }
 
-         uml.append('@enduml\n')
-
-        postProcess(uml)
+    /**
+     * @param model: (package x class x field + links)
+     * @param configurationCommand: user preferences
+     * @return well-formed PlantUML script.
+     */     
+    def modelToScript(model, configurationCommand) {
+        StringBuilder uml = new StringBuilder()        
+        uml.append('@startuml\n')       
+        drawPackages(model.partition, uml, configurationCommand)
+        drawRelations(model.links, uml, configurationCommand)
+        uml.append('@enduml\n')
+        uml.toString()
     }
         
     /**
-    * Convert compressed Uml Spec into PNG byte Stream
-    */
+     * Convert compressed Uml Spec into PNG byte Stream
+     */
     def asStream (finalUml) {
-          def s = new SourceStringReader(decodeAndDecompress(finalUml))
+          def s = new SourceStringReader(finalUml)
           def os = new ByteArrayOutputStream()
           s.generateImage(os, new FileFormatOption(FileFormat.PNG))
           os.close()
@@ -70,43 +94,8 @@ class PlantUmlService {
           os.toByteArray()
     }
           
-    private String postProcess(uml) {
-          uml.append(metaData())
-          def finalUml = uml.toString()
-          log.debug "UML: $finalUml"
-          compressAndEncodeString(finalUml)
-    }           
-
-        // extra provenance information
-    private String metaData() {
-"""
-title ${grailsApplication.metadata.'app.name'} - ${grailsApplication.metadata.'app.version'}
-legend left
-Grails version: ${grailsApplication.metadata.'app.grails.version'}
-endlegend
-"""
-    }
-
-    /**
-    * Zlib compression (compatible plantUML).
-    */
-    private String compressAndEncodeString(String str) {
-        byte[] xmlBytes = str.getBytes('UTF-8')
-        byte[] compressed = new CompressionZlib().compress(xmlBytes)
-        new AsciiEncoder().encode(compressed)
-    }
-
-    /**
-    * Zlib decompression (compatible plantUML).
-    */
-    private String decodeAndDecompress(String encoded) {
-        def compressed = new AsciiEncoder().decode(encoded)
-        def bytes = new CompressionZlib().decompress(compressed)
-        new String(bytes, "UTF-8")
-    }    
-
     private shortName(name) {
       name.replaceAll('^.*\\.', '')      
-      }      
+    }      
     
-   }
+}
