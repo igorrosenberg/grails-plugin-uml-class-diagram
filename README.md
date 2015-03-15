@@ -120,5 +120,5 @@ From then on, you can modify code in the plugin, and your "web" application refl
 * https://github.com/trygvea/grails-class-diagram/
 * https://github.com/david-w-millar/grails-plantuml-plugin
 * https://code.google.com/p/grails-domain-uml/source/browse/#svn%2FCreateDomainUml
-
-
+* http://sdedit.sourceforge.net/
+* https://www.websequencediagrams.com/

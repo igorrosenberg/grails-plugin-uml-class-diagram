@@ -5,3 +5,4 @@ grails-uml-class-diagram-*.zip.sha1
 plugin.xml
 web-app/WEB-INF
 plugin.xml
+application.properties
