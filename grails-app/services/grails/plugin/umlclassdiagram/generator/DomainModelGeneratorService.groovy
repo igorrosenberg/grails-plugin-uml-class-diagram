@@ -37,29 +37,6 @@ class DomainModelGeneratorService {
       }
   }  
 
-  /**
-  * Convert UML spec to PNG byte stream.
-  */
-  def localPlantUml(ConfigurationCommand configurationCommand) {
-    def modelGenerator
-    switch (configurationCommand.diagramType) {
-      case DiagramType.DOMAIN: 
-        modelGenerator = new DomainModelGenerator()
-        break 
-      case DiagramType.LAYERS: 
-        modelGenerator = new LayersModelGenerator()
-        break 
-      case DiagramType.DB2: 
-        modelGenerator = new DB2ModelGenerator()
-        break 
-      default: 
-        throw new IOException("DiagramType ${configurationCommand.diagramType} not implemented")        
-    }
-    def model = modelGenerator.makeModel()
-    def plantUmlScript = 
-      plantUmlService.modelToScript(model, configurationCommand)
-    plantUmlService.asStream(plantUmlScript)
-  }
  
   /**
   * @param classList  List<ClassData> 
@@ -293,8 +270,8 @@ class DomainModelGeneratorService {
       }
     
     /**
-  *  Introspect a domain class.
-  * @return useful data in a ClassData map (className, properties, associations).
+     *  Introspect a domain class.
+     * @return useful data in a ClassData map (className, properties, associations).
      */
     private extractDomainData(model) {
       def c = grailsApplication.classLoader.loadClass("${model.fullName}")

@@ -7,12 +7,27 @@ class Db2ModelGeneratorService {
 
    def grailsApplication
 
+
+      private def getInputFiles() {
+        def argsMap = grailsApplication.config.sqlDataFiles
+        if (!argsMap)
+          throw new IOException("Configuration key sqlDataFiles is empty. Set it in Config.groovy")
+
+        'tables,primaryKeys,foreignKeys'.split(',').each {
+            if (!argsMap[it])
+              throw new IOException("Configuration key sqlDataFiles.$it is missing. Set it in Config.groovy")
+            if (!new File(argsMap[it]).exists())
+              throw new IOException("Configuration key sqlDataFiles.$it points to non-existent file: ${argsMap[it]}")
+        }      
+        argsMap
+      }
+
    /**
     * Generate the model (package x class x field + links) of the underlying DB2 data.
     * @return (schema x table x column + foreign keys).
     */ 
    def makeModel() {
-      def argsMap = grailsApplication.config.sqlDataFiles
+      def argsMap = getInputFiles()
       def universe = getColumns(new File(argsMap.tables))
       addPrimaryKeys(universe, new File(argsMap.primaryKeys))
       def foreignKeys = getForeignKeys(new File(argsMap.foreignKeys))
@@ -29,7 +44,13 @@ class Db2ModelGeneratorService {
 
         def index = [TABSCHEMA:0,TABNAME:1,COLNAME:2,TYPENAME:5,LENGTH:6]
 
+        boolean isFirstLine = true
         inputFile.eachLine { x ->
+            if (isFirstLine) {
+              // always skip first line
+              isFirstLine = false
+              return
+            }  
             def tokens = x.tokenize()
             
             // name  
@@ -56,8 +77,14 @@ class Db2ModelGeneratorService {
     */  
     private void addPrimaryKeys ( univ, inputFile ) {
         def index = [TABLE_CAT:0,TABLE_SCHEM:1,TABLE_NAME:2,COLUMN_NAME:3]
-  
+        println "index=$index"  
+        boolean isFirstLine = true
         inputFile.eachLine { x ->
+            if (isFirstLine) {
+              // always skip first line
+              isFirstLine = false
+              return
+            }  
             def tokens = x.tokenize()
 
             // name  
@@ -65,9 +92,13 @@ class Db2ModelGeneratorService {
             def table = tokens[index.TABLE_NAME]
             def column = tokens[index.COLUMN_NAME]
 
+
             // store
-            univ[schema]][table][column].isPrimary = true
+            // FIXME remove println, uncomment isPrimary
+            // println "Not adding primary key schema=$schema, table=$table, column=$column"
+            // univ[schema][table][column].isPrimary = true
         }
+        println "Not adding primary keys"
     }
 
     /**
@@ -77,7 +108,13 @@ class Db2ModelGeneratorService {
     private getForeignKeys (inputFile) { 
         def index = [TABSCHEMA:1,TABNAME:2,FK_COLNAMES:13,REFTABSCHEMA:6,REFTABNAME:7,REFKEYNAME:14]	
         def foreignKeys = []
+        boolean isFirstLine = true
         inputFile.eachLine { x ->
+            if (isFirstLine) {
+              // always skip first line
+              isFirstLine = false
+              return
+            }  
             def tokens = x.tokenize()
                 
             // name  
@@ -91,8 +128,8 @@ class Db2ModelGeneratorService {
             // store
             foreignKeys << 
               [
-              from: [ schema:schema1, table:table1, column:column1 ], 
-              to:   [ schema:schema2, table:table2, column:column2 ]                
+              from: [ package:schema1, class:table1, field:column1 ], 
+              to:   [ package:schema2, class:table2, field:column2 ]                
               ]
         }
         foreignKeys

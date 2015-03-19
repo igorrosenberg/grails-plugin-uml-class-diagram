@@ -1,5 +1,7 @@
 package grails.plugin.umlclassdiagram.generator
 
+import grails.plugin.umlclassdiagram.*
+
 /**
  * Generate models.
  */
