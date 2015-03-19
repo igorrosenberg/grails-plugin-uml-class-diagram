@@ -5,7 +5,7 @@ import com.nafiux.grails.classdomainuml.*
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 
 /**
- * Generate diagrams from Graph using PlantUml formalism.
+ * Generate diagrams from a Model.
  */
 class PlantUmlService {
          
@@ -21,7 +21,7 @@ class PlantUmlService {
           if (classifiers.type) {
             uml.append(': ').append(classifiers.type)
             if (classifiers.length) {
-              uml.append('[').append(classifiers.length).append(']').
+              uml.append('[').append(classifiers.length).append(']')
             }
           }
           // TODO: add decorators for properties index, abstract, static
@@ -34,9 +34,18 @@ class PlantUmlService {
      * @param configurationCommand: user preferences
      */
     private void drawPackages(packageMap, StringBuilder uml, configurationCommand) {
-        model.partition.each { packageName, classMap ->
+        packageMap.each { packageName, classMap ->  
+            def matchedFilter = 
+              configurationCommand.packageFilterRegexps?.find {regexp  -> 
+                log.info "comparing package $packageName with regexp $regexp, result=${packageName?.matches(regexp)}"
+                packageName?.matches(regexp) ? regexp : null
+                }
+            if (matchedFilter) {
+                // Skip completely this package, it matches one of the filter regexps
+                log.info "Skipping package $packageName as per regexp $matchedFilter"
+                return                   
+              }
             uml.append('package ').append(packageName).append(' <<Rect>> {\n')
-            // draw classes
             classMap.each { className, propertiesMap ->
                 uml.append('class ').append(className).append(' {\n') 
                 drawProperties(propertiesMap, uml, configurationCommand) 
@@ -52,17 +61,20 @@ class PlantUmlService {
      */
     private void drawRelations(relationList, StringBuilder uml, configurationCommand) {
         relationList.each() { relation ->
-            uml.append(from.package)
+            println "  relation $relation"
+            println "  relation.from ${relation.from}"
+            println "  relation.to ${relation.to}"
+            uml.append(relation.from.package)
             uml.append('.')
-            uml.append(from.class)
+            uml.append(relation.from.class)
             uml.append(' "')
-            uml.append(from.field)
+            uml.append(relation.from.field)
             uml.append('" --> "')
-            uml.append(to.field)
+            uml.append(relation.to.field)
             uml.append('" ')
-            uml.append(to.package)
+            uml.append(relation.to.package)
             uml.append('.')
-            uml.append(to.class)
+            uml.append(relation.to.class)
             uml.append('\n')
         }
     }
@@ -87,7 +99,7 @@ class PlantUmlService {
     def asStream (finalUml) {
           def s = new SourceStringReader(finalUml)
           def os = new ByteArrayOutputStream()
-          s.generateImage(os, new FileFormatOption(FileFormat.PNG))
+          s.generateImage(os, new FileFormatOption(FileFormat.SVG))
           os.close()
 
           // ready to send it over the wire! 

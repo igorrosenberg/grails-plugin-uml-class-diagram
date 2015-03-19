@@ -27,11 +27,26 @@ class UmlController {
           return
       }
 
+      render text: 'ffffi' + params
+      return
+      
+
       def stream = umlService.localPlantUml(configurationCommandInstance)
-      log.info 'PNG byte stream sent to user'
-      render file: stream, contentType: 'image/png'          
-    }
- 
+      log.info 'Image byte stream sent to user'
+      response.addHeader('Content-Disposition', 'attachment; filename="uml.svg"');
+      render file: stream, contentType: 'image/svg+xml' //'image/png'          
+    } 
+    
+}
+
+/**
+* Command sub-object for Configuration options
+*/
+class ConfigurationFilterCommand { 
+  /** Filters restricting the visibility */
+  String [] regexps = new String[0]
+  /** true => include specified regexp; false => exclude specified regexp */
+  boolean inclusion
 }
 
 /**
@@ -39,11 +54,17 @@ class UmlController {
 */
 class ConfigurationCommand { 
 
+  /** Filters restricting the visibility of packages */
+  String [] packageFilterRegexps = new String[0]
+
   /** Filters restricting the visibility of fields within classes */
   String [] fieldFilterRegexps = ['^id$','^version$']
 
   /** Filters restricting the visibility of classes */
   String [] classFilterRegexps = new String[0]
+
+  /** Filters restricting the visibility of links */
+  String [] linkFilterRegexps = new String[0]
 
   /** Short Class names for most used Java classes (from the java API) */
   boolean showCanonicalJavaClassNames = false
@@ -53,7 +74,7 @@ class ConfigurationCommand {
 
   boolean filterGrailsFields = true
 
-  DiagramType diagramType  = DiagramType.DOMAIN
+  DiagramType diagramType  = DiagramType.DB2
 
   /** Canonical or Short Class names for all fields, not restricted to java API*/
   // TODO boolean showCanonicalClassNames
@@ -63,6 +84,8 @@ class ConfigurationCommand {
   static constraints = {
     fieldFilterRegexps nullable: true
     classFilterRegexps nullable: true
+    packageFilterRegexps nullable: true
+    linkFilterRegexps nullable: true
   }
 }
   
