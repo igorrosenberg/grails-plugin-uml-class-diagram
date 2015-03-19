@@ -13,23 +13,34 @@
 
 
 <fieldset class="form">
-HELLO
-<g:radioGroup name="filterX"
-              labels="['Inclusion','Exclusion']"
-              values="['Inclusion','Exclusion']"
-              value="'Inclusion'">
-  <span>${it.label} ${it.radio}</span>
-</g:radioGroup>
-<div class="fieldcontain ${hasErrors(bean: configurationCommandInstance, field: 'packageFilterRegexps', 'error')} ">
-	<label for="packageFilterRegexps">
-		<g:message code="configurationCommand.packageFilterRegexps.label" default="Package Filter Regexps" />		
+
+<g:render template="oneFilter" bean="${configurationCommandInstance}" var="filterName" 
+    collection="${'package class field link'.split().collect{ it + 'Filter'}}"/>
+ 
+<div class="fieldcontain ${hasErrors(bean: configurationCommandInstance.packageFilter, field: 'regexps', 'error')} ">
+
+  <g:set var="beanName" value="${'packageFilter'}"/>
+  
+	<label for="packageFilter">
+		<g:message code="configurationCommand.packageFilter.label" default="Package Filter" />		
 	</label>
-	<g:each in="${configurationCommandInstance?.packageFilterRegexps ?: ' '}" var="regexp" status="i">
-		<g:textField name="packageFilterRegexps" value="${regexp}" id="packageFilterRegexps${i}"/>
+
+  <g:radioGroup name="packageFilter.inclusion"
+                labels="['Inclusion','Exclusion']"
+                values="[true,false]"
+                value="${configurationCommandInstance?.packageFilter?.inclusion}">
+    <span>${it.label} ${it.radio}</span>
+  </g:radioGroup>
+
+	<g:each in="${configurationCommandInstance?.packageFilter?.regexps ?: ' '}" var="regexp" status="i">
+		<g:textField name="packageFilter.regexps" value="${regexp}" id="packageFilter.regexps${i}"/>
 	</g:each>
+
 	<a href="#" onclick="duplicatePreviousField(this)">Add</a>	
+
 </div>
 
+<%--
 <div class="fieldcontain ${hasErrors(bean: configurationCommandInstance, field: 'classFilterRegexps', 'error')} ">
 	<label for="classFilterRegexps">
 		<g:message code="configurationCommand.classFilterRegexps.label" default="Class Filter Regexps" />		
@@ -91,5 +102,6 @@ HELLO
 	<g:checkBox name="showGrailsInternalClasses" value="${configurationCommandInstance?.showGrailsInternalClasses}" />
 </div>
 
+--%>
 </fieldset>
 

@@ -47,6 +47,11 @@ class ConfigurationFilterCommand {
   String [] regexps = new String[0]
   /** true => include specified regexp; false => exclude specified regexp */
   boolean inclusion
+
+  static constraints = {
+    regexps nullable: true
+  }
+
 }
 
 /**
@@ -54,18 +59,18 @@ class ConfigurationFilterCommand {
 */
 class ConfigurationCommand { 
 
-  /** Filters restricting the visibility of packages */
-  String [] packageFilterRegexps = new String[0]
+  /** Visibility of packages */
+  ConfigurationFilterCommand packageFilter
 
-  /** Filters restricting the visibility of fields within classes */
-  String [] fieldFilterRegexps = ['^id$','^version$']
+  /** Visibility of classes within packages */
+  ConfigurationFilterCommand classFilter
 
-  /** Filters restricting the visibility of classes */
-  String [] classFilterRegexps = new String[0]
-
-  /** Filters restricting the visibility of links */
-  String [] linkFilterRegexps = new String[0]
-
+  /** Visibility of fields within classes */
+  ConfigurationFilterCommand fieldFilter
+  
+  /** Visibility of links between classes */
+  ConfigurationFilterCommand linkFilter
+  
   /** Short Class names for most used Java classes (from the java API) */
   boolean showCanonicalJavaClassNames = false
 
@@ -81,12 +86,6 @@ class ConfigurationCommand {
   /** Properties which generate an arrow also listed in the origin class */
   // TODO boolean duplicateFieldAndArrow
   
-  static constraints = {
-    fieldFilterRegexps nullable: true
-    classFilterRegexps nullable: true
-    packageFilterRegexps nullable: true
-    linkFilterRegexps nullable: true
-  }
 }
   
 enum DiagramType {
