@@ -27,10 +27,6 @@ class UmlController {
           return
       }
 
-      render text: 'ffffi' + params
-      return
-      
-
       def stream = umlService.localPlantUml(configurationCommandInstance)
       log.info 'Image byte stream sent to user'
       response.addHeader('Content-Disposition', 'attachment; filename="uml.svg"');

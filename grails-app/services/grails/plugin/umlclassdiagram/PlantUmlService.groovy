@@ -36,13 +36,16 @@ class PlantUmlService {
     private void drawPackages(packageMap, StringBuilder uml, configurationCommand) {
         packageMap.each { packageName, classMap ->  
             def matchedFilter = 
-              configurationCommand.packageFilterRegexps?.find {regexp  -> 
+              configurationCommand.packageFilter.regexps?.find {regexp  -> 
                 log.info "comparing package $packageName with regexp $regexp, result=${packageName?.matches(regexp)}"
                 packageName?.matches(regexp) ? regexp : null
                 }
-            if (matchedFilter) {
-                // Skip completely this package, it matches one of the filter regexps
-                log.info "Skipping package $packageName as per regexp $matchedFilter"
+            if (configurationCommand.packageFilter.inclusion && !matchedFilter) {
+                log.info "Skipping package $packageName : no match for inclusion regexps"
+                return                   
+              }
+            if (!configurationCommand.packageFilter.inclusion && matchedFilter) {
+                log.info "Skipping package $packageName : it matched exclusion regexp=$matchedFilter"
                 return                   
               }
             uml.append('package ').append(packageName).append(' <<Rect>> {\n')
