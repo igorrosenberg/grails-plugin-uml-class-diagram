@@ -13,16 +13,17 @@
 			<g:hasErrors bean="${configurationCommandInstance}">
 			  <ul class="errors" role="alert">
 				  <g:eachError bean="${configurationCommandInstance}" var="error">
-	  			  <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>
+	  			  <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>>
+	  			    <g:message error="${error}"/>
+	  			  </li>
 				  </g:eachError>
 			  </ul>
 			</g:hasErrors>
-			<g:form>
-				<fieldset class="form">
-					<g:render template="form"/>
-				</fieldset>
+			<g:form action="draw" method="get">
+				<g:render template="form"/>
 				<fieldset class="buttons">
-					<g:submitButton name="draw" class="save" value="${message(code: 'default.button.create.label', default: 'Draw')}" />
+					<g:submitButton name="draw" class="save" 
+					      value="${message(code: 'default.button.create.label', default: 'Draw')}" />
 				</fieldset>
 			</g:form>
 		</div>
