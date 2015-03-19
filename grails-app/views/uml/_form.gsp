@@ -14,64 +14,11 @@
 
 <fieldset class="form">
 
-<g:render template="oneFilter" bean="${configurationCommandInstance}" var="filterName" 
-    collection="${'package class field link'.split().collect{ it + 'Filter'}}"/>
+  <g:render template="oneFilter" bean="${configurationCommandInstance}" var="filterName" 
+      collection="${'package class field link'.split().collect{ it + 'Filter'}}"/>
  
-<div class="fieldcontain ${hasErrors(bean: configurationCommandInstance.packageFilter, field: 'regexps', 'error')} ">
-
-  <g:set var="beanName" value="${'packageFilter'}"/>
-  
-	<label for="packageFilter">
-		<g:message code="configurationCommand.packageFilter.label" default="Package Filter" />		
-	</label>
-
-  <g:radioGroup name="packageFilter.inclusion"
-                labels="['Inclusion','Exclusion']"
-                values="[true,false]"
-                value="${configurationCommandInstance?.packageFilter?.inclusion}">
-    <span>${it.label} ${it.radio}</span>
-  </g:radioGroup>
-
-	<g:each in="${configurationCommandInstance?.packageFilter?.regexps ?: ' '}" var="regexp" status="i">
-		<g:textField name="packageFilter.regexps" value="${regexp}" id="packageFilter.regexps${i}"/>
-	</g:each>
-
-	<a href="#" onclick="duplicatePreviousField(this)">Add</a>	
-
-</div>
-
-<%--
-<div class="fieldcontain ${hasErrors(bean: configurationCommandInstance, field: 'classFilterRegexps', 'error')} ">
-	<label for="classFilterRegexps">
-		<g:message code="configurationCommand.classFilterRegexps.label" default="Class Filter Regexps" />		
-	</label>
-	<g:each in="${configurationCommandInstance?.classFilterRegexps ?: ' '}" var="regexp" status="i">
-		<g:textField name="classFilterRegexps" value="${regexp}" id="classFilterRegexps${i}"/>
-	</g:each>
-	<a href="#" onclick="duplicatePreviousField(this)">Add</a>	
-</div>
-
-<div class="fieldcontain ${hasErrors(bean: configurationCommandInstance, field: 'fieldFilterRegexps', 'error')} ">
-	<label for="fieldFilterRegexps">
-		<g:message code="configurationCommand.fieldFilterRegexps.label" default="Field Filter Regexps" />		
-	</label>
-	<g:each in="${configurationCommandInstance?.fieldFilterRegexps ?: ' '}" var="regexp" status="i" >
-		<g:textField name="fieldFilterRegexps" value="${regexp}" id="fieldFilterRegexps${i}"/>
-	</g:each>
-	<a href="#" onclick="duplicatePreviousField(this)">Add</a>
-</div>
-
-<div class="fieldcontain ${hasErrors(bean: configurationCommandInstance, field: 'linkFilterRegexps', 'error')} ">
-	<label for="linkFilterRegexps">
-		<g:message code="configurationCommand.linkFilterRegexps.label" default="Link Filter Regexps" />		
-	</label>
-	<g:each in="${configurationCommandInstance?.linkFilterRegexps ?: ' '}" var="regexp" status="i">
-		<g:textField name="linkFilterRegexps" value="${regexp}" id="linkFilterRegexps${i}"/>
-	</g:each>
-	<a href="#" onclick="duplicatePreviousField(this)">Add</a>	
-</div>
-
 </fieldset>
+
 <fieldset class="form">
 <div class="fieldcontain ${hasErrors(bean: configurationCommandInstance, field: 'diagramType', 'error')} required">
 	<label for="diagramType">
@@ -102,6 +49,5 @@
 	<g:checkBox name="showGrailsInternalClasses" value="${configurationCommandInstance?.showGrailsInternalClasses}" />
 </div>
 
---%>
 </fieldset>
 
