@@ -48,6 +48,22 @@ class ConfigurationFilterCommand {
     regexps nullable: true
   }
 
+  boolean validate(target) {
+    def matchedFilter = 
+      this.regexps?.find { regexp  -> 
+        log.info "comparing $target with regexp $regexp, result=${target?.matches(regexp)}"
+        target?.matches(regexp) ? regexp : null
+        }
+    if (this.inclusion && !matchedFilter) {
+        log.info "Skipping $target : no match for inclusion regexps"
+        return false                  
+      }
+    if (!this.inclusion && matchedFilter) {
+        log.info "Skipping $target : it matched exclusion regexp=$matchedFilter"
+        return false             
+      }
+    return true
+  }
 }
 
 /**

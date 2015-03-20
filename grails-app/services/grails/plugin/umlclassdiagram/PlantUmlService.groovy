@@ -15,8 +15,10 @@ class PlantUmlService {
      * Add to StringBuilder the PlantUML syntax describing the properties.
      * @param configurationCommand: user preferences
      */
-    private void drawProperties(propertiesMap, StringBuilder uml, configurationCommand) {
+    private void drawProperties(propertiesMap, StringBuilder umlBuilder, configurationCommand) {
+      StringBuilder uml = new StringBuilder ()
       propertiesMap.each { propertyName, classifiers ->
+          uml.setLength(0)  // empty string builder for each new iteration
           uml.append(propertyName)
           if (classifiers.type) {
             uml.append(': ').append(classifiers.type)
@@ -25,7 +27,9 @@ class PlantUmlService {
             }
           }
           // TODO: add decorators for properties index, abstract, static
-          uml.append('\n')
+          if (!configurationCommand.fieldFilter.validate(uml.toString()))
+              return                   
+          umlBuilder.append(uml).append('\n')
       }             
     }
 
@@ -35,21 +39,12 @@ class PlantUmlService {
      */
     private void drawPackages(packageMap, StringBuilder uml, configurationCommand) {
         packageMap.each { packageName, classMap ->  
-            def matchedFilter = 
-              configurationCommand.packageFilter.regexps?.find {regexp  -> 
-                log.info "comparing package $packageName with regexp $regexp, result=${packageName?.matches(regexp)}"
-                packageName?.matches(regexp) ? regexp : null
-                }
-            if (configurationCommand.packageFilter.inclusion && !matchedFilter) {
-                log.info "Skipping package $packageName : no match for inclusion regexps"
+            if (!configurationCommand.packageFilter.validate(packageName))
                 return                   
-              }
-            if (!configurationCommand.packageFilter.inclusion && matchedFilter) {
-                log.info "Skipping package $packageName : it matched exclusion regexp=$matchedFilter"
-                return                   
-              }
             uml.append('package ').append(packageName).append(' <<Rect>> {\n')
             classMap.each { className, propertiesMap ->
+                if (!configurationCommand.classFilter.validate(className.toString()))
+                    return                   
                 uml.append('class ').append(className).append(' {\n') 
                 drawProperties(propertiesMap, uml, configurationCommand) 
                 uml.append('}\n')   // class end
@@ -62,11 +57,10 @@ class PlantUmlService {
      * Add to StringBuilder the PlantUML syntax describing the relations.
      * @param configurationCommand: user preferences
      */
-    private void drawRelations(relationList, StringBuilder uml, configurationCommand) {
+    private void drawRelations(relationList, StringBuilder umlTarget, configurationCommand) {
         relationList.each() { relation ->
-            println "  relation $relation"
-            println "  relation.from ${relation.from}"
-            println "  relation.to ${relation.to}"
+        
+            StringBuilder uml = new StringBuilder()
             uml.append(relation.from.package)
             uml.append('.')
             uml.append(relation.from.class)
@@ -78,7 +72,12 @@ class PlantUmlService {
             uml.append(relation.to.package)
             uml.append('.')
             uml.append(relation.to.class)
-            uml.append('\n')
+            
+            if (!configurationCommand.linkFilter.validate(uml.toString()))
+                return                   
+
+            log.info "  relation $uml"
+            umlTarget.append(uml).append('\n')            
         }
     }
 
