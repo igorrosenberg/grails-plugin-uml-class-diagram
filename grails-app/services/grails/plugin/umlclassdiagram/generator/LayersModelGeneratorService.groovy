@@ -2,9 +2,6 @@ package grails.plugin.umlclassdiagram.generator
 
 import static grails.plugin.umlclassdiagram.Constants.*
 
-import com.nafiux.grails.classdomainuml.*
-import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
-
 class LayersModelGeneratorService {
 
     def grailsApplication
@@ -61,76 +58,37 @@ class LayersModelGeneratorService {
      * @return useful data in a ClassData map (className, properties, associations).
      */
     private extractArtefactData(model, exclusionList) {
-        log.debug "Introspect artefact data for bean=" + model.name
-        def bruntProperties = model.getReferenceInstance().properties.findAll { k, v -> !(k in exclusionList) }
+        log.debug "Introspect artefact data for bean=${model?.name}"
 
-        def links = getModelLinks(bruntProperties).collect { field ->
+        Class realClass = model.getClazz()
+        String fromPackageName = realClass.getPackage().name
+        String fromClassName = realClass.getSimpleName()
+        // TODO there must be a better way to introspect an org.codehaus.groovy.grails.commons.GrailsClass
+        def fields = model.getReferenceInstance().properties
+        fields = fields.findAll { k, v -> !(k in exclusionList) }
+
+        // as dict of {name, type, generic}
+        def properties = fields.collect{ k,v ->
+            [name: k,
+             type : v.getClass().name.replaceAll('\\$.*$', '')
+            ]
+        }
+        // as list of dict of {from, to}
+        def links = fields.collect { k,v ->
+            def destFieldName = v.getClass().name.replaceAll('\\$.*$', '')
+            destFieldName = destFieldName[destFieldName.lastIndexOf('.')+1..-1]
+
             [
-                    from: [package: model.packageName, class: model.fullName, field: field.name],
-                    to  : [package: 'TBD', class: field.type]
+                    from: [package: fromPackageName, class: fromClassName, field: k],
+                    to  : [package: v.getClass().getPackage().name, class: destFieldName]
             ]
         }
         [
-                packageName : model.packageName,
-                className   : model.fullName,
-                properties  : getModelProperties(bruntProperties),
-                associations: links ,
+                packageName  : fromPackageName,
+                className    : fromClassName,
+                properties   : properties,
+                associations : links,
         ]
     }
-
-    /**
-     * @return List < map (name, type) > : list of {propertyName , propertyType } dictionaries
-     */
-    private getModelProperties(bruntProperties) {
-        bruntProperties.collect { k, v ->
-            getQualifiedType(k, v)
-        }
-    }
-
-    /**
-     * @return List < ( modelName , left , type , right , typeName , assocName ) >
-     */
-    private getModelLinks(bruntProperties) {
-        // on every field of the 'model' class, extract link information
-        bruntProperties.collect { k, v ->
-            def propertyType = getQualifiedType(k, v)
-            [name : k, type: propertyType.type]
-        }
-
-    }
-
-    /**
-     * @return dictionnary , the (possibly) fully qualified class name of the bean.
-     */
-    private getQualifiedType(beanName, beanData) {
-        beanName = beanName.capitalize()         // sometimes artefact.propertyName is capitalized, sometimes not ?!
-        def type
-        def generic
-
-        return [name: beanName, type: beanName]
-
-        if (beanData) {
-            type = beanData.getType().name
-            generic = beanData.getReferencedPropertyType().name
-            if (type == generic) {
-                generic = null
-            }
-        } else {
-            // TODO maybe more data can be extracted, not only services
-            type = UNKNOWN
-            if (beanName =~ /.*Service/) {
-                def serviceArtefact = grailsApplication.getArtefacts('Service').find { it ->
-                    it.propertyName.capitalize() == beanName
-                }
-                if (serviceArtefact) {
-                    log.debug "   --- $beanName has matching artefact: $serviceArtefact"
-                    type = serviceArtefact.fullName
-                }
-            }
-        }
-        log.debug "Type for $beanName : $type"
-        [name: beanName, type: type.replaceAll('\\$.*$', ''), generic: generic]
-    }
-
 
 }

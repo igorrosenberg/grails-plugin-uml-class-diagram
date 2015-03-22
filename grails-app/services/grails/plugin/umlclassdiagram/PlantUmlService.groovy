@@ -97,9 +97,9 @@ class PlantUmlService {
     /**
      * @param model : (package x class x field + links)
      * @param configurationCommand : user preferences
-     * @return well-formed PlantUML script.
+     * @return String well-formed PlantUML script.
      */
-    def modelToScript(model, configurationCommand) {
+    String modelToScript(model, configurationCommand) {
         StringBuilder uml = new StringBuilder()
         uml.append('@startuml\n')
         drawPackages(model.partition, uml, configurationCommand)
