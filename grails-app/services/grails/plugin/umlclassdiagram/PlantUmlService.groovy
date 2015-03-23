@@ -9,8 +9,6 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
  */
 class PlantUmlService {
 
-    def grailsApplication
-
     /*
     TODO add shortening all Java class names
       if (!config.showCanonicalJavaClassNames) {
@@ -79,9 +77,13 @@ class PlantUmlService {
             uml.append(relation.from.class)
             uml.append(' "')
             uml.append(relation.from.field)
-            uml.append('" --> "')
-            uml.append(relation.to.field)
-            uml.append('" ')
+            if (relation.to.field) {
+                uml.append('" --> "')
+                uml.append(relation.to.field)
+                uml.append('" ')
+            } else {
+                uml.append('" --> ')
+            }
             uml.append(relation.to.package)
             uml.append('.')
             uml.append(relation.to.class)
