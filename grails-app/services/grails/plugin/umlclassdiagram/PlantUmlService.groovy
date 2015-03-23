@@ -75,14 +75,16 @@ class PlantUmlService {
             uml.append(relation.from.package)
             uml.append('.')
             uml.append(relation.from.class)
-            uml.append(' "')
-            uml.append(relation.from.field)
+            if (relation.from.field) {
+                uml.append(' "')
+                uml.append(relation.from.field)
+                uml.append('"')
+            }
+            uml.append(' --> ')
             if (relation.to.field) {
-                uml.append('" --> "')
+                uml.append('"')
                 uml.append(relation.to.field)
                 uml.append('" ')
-            } else {
-                uml.append('" --> ')
             }
             uml.append(relation.to.package)
             uml.append('.')
