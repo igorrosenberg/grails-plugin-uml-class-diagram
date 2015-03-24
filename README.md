@@ -23,19 +23,19 @@ See the [User Guide](http://igorrosenberg.github.io/grails-plugin-uml-class-diag
 
 ## Features
 
-  1. :white_check_mark: Global Class diagrams for Domain  (see screenshot section below)
-  1. :white_check_mark: Global Class diagrams (layered) for Controllers & Services & other beans (only public methods, no javadoc comments)
-  1. :white_check_mark: Diagrams exposed as specific UmlController (http interface)
-  1. :white_check_mark: Diagrams exposed as a grails script: "grails to-uml" (cli interface)
-  1. :white_check_mark: Diagram generation in PNG via plantUML.jar from [PlantUML project](http://plantuml.sourceforge.net/)
-  1. :white_check_mark: Diagram generation using online [PlantUML server](http://www.plantuml.com/plantuml) (ie no need to rely on plantUML.jar - no local image generation) 
-  1. :white_check_mark: Configuration of the output (http POST parameters)
-  1. :white_check_mark: Configuration of the output (html wizard)
-  1. :clock9: Configuration of the output (cli script options)
+  1. :white_check_mark: Global Class diagrams for Domain (see screenshot section above)
+  1. :white_check_mark: Global Class diagrams (layered) for Controllers & Services & other beans (see screenshot section above)
+  1. :white_check_mark: Global Class diagrams from DB2 database dump
+  1. :white_check_mark: Diagrams exposed as specific UmlController (http interface) (see screenshot section above)
+  1. :white_check_mark: Diagram generation via plantUML.jar from [PlantUML project](http://plantuml.sourceforge.net/)
+  1. :white_check_mark: Configuration of the output (html wizard or directly through http GET parameters)
+  1. :white_check_mark: Image output types: SVG, ~~PNG~~
+  1. :clock9: Diagrams exposed as a grails script: "grails to-uml" (cli interface)
   1. :clock9: Inclusion in standard gdoc process
-  1. :clock9: Diagram generation using online [yUML](http://www.yuml.me/diagram/scruffy/class/draw) (different syntax)
   1. :clock9: Output compatible with diagram manipulation software
   1. :no_entry: (Out of the scope of this plugin) ~~Document specifically webapp interfaces (public methods of Controllers, with javadoc, input/output spec?)~~ 
+  1. :no_entry: (No longer considered useful) ~~Diagram generation using online [PlantUML server](http://www.plantuml.com/plantuml)~~ 
+  1. :no_entry: (No longer considered useful) ~~Diagram generation using online [yUML](http://www.yuml.me/diagram/scruffy/class/draw)~~
   
 ## Finished tasks
 
@@ -55,11 +55,12 @@ See the [User Guide](http://igorrosenberg.github.io/grails-plugin-uml-class-diag
 * (v0.3.2) GSP View exposing the Config Command object
 * (v0.3.3) grails docs, see [github gh-pages](http://igorrosenberg.github.io/grails-plugin-uml-class-diagram/)
 * (v0.3.4) moved extra info from readme to user guide, see [github gh-pages](http://igorrosenberg.github.io/grails-plugin-uml-class-diagram/)
+* (v0.4.0) Refactored for common algorithm: "read model > uml script > image"
   
 ## Ongoing tasks  
 
 
-* /!\ separate README.md (dev) from src/docs/guide (usage)
+* :warning: separate README.md (dev) from src/docs/guide (usage)
 * Script builds a Config Command object (script parameters and/or config options)
 * Config options (showCanonicalClassNames duplicateFieldAndArrow)
 * Config option: no duplication = if isAssociation, don't list in properties
@@ -71,12 +72,14 @@ See the [User Guide](http://igorrosenberg.github.io/grails-plugin-uml-class-diag
 * ~~grails introspect controllers, services >> public methods~~ (currently out of the scope of this UML plugin)
 * ~~plantUml Class diagram spec (non trivial example)~~
 * ~~plantUml Dependency diagram spec (non trivial example)~~
-* Refactor UmlService (too much duplication) ==> Domain vs Controller/Service should not be separate methods
-  * see grailsApplication.serviceClasses() , can that help ?
-* Refactor (pass2) UmlController | UmlService | PlantUmlService |YumlService
-* Yuml as secondary option
+* ~~Refactor UmlService (too much duplication) ==> Domain vs Controller/Service should not be separate methods~~
+  * ~~see grailsApplication.serviceClasses() , can that help ?~~
+* ~~Refactor (pass2) UmlController | UmlService | PlantUmlService |YumlService~~
+* ~~Yuml as secondary option~~
 * gdoc inclusion of the script
-* script : controller/services/domains >> to PNG files in target output folder 
+* Correct UML arrows (field inclusion should be represented by a diamond)
+* Use proper reflexion on Domains and Services, see FIXME in code
+* script : controller/services/domains >> to image files in target output folder 
 ```
     includeTargets << grailsScript("_GrailsBootstrap")
     loadApp()
@@ -88,7 +91,7 @@ See the [User Guide](http://igorrosenberg.github.io/grails-plugin-uml-class-diag
 
 ## Installation
 
-Add `runtime ":uml-class-diagram:0.3.3"` to *BuildConfig.groovy* in the plugins section (requires grails 2.0 > \*).
+Add `runtime ":uml-class-diagram:0.4.0"` to *BuildConfig.groovy* in the plugins section (requires grails 2.0 > \*).
 
 ## Development
 
@@ -111,7 +114,7 @@ Apart from the last line, we're basically turning off grails 2.3 forking process
 
 You may also need to add _grails.reload.enabled = true_ to ../grails-plugin-uml-class-diagram/.../BuildConfig.groovy  
 
-From then on, you can modify code in the plugin, and your "web" application reflects the changes immediately.
+From then on, you can modify code in the plugin, and your "web" application reflects the changes immediately (extra step: maybe you need to run it with `grails -reloading run-app`). 
 
 ## Inspiration from 
 
@@ -122,3 +125,4 @@ From then on, you can modify code in the plugin, and your "web" application refl
 * https://code.google.com/p/grails-domain-uml/source/browse/#svn%2FCreateDomainUml
 * http://sdedit.sourceforge.net/
 * https://www.websequencediagrams.com/
+

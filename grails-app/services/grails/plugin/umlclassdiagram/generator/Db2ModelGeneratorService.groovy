@@ -77,7 +77,6 @@ class Db2ModelGeneratorService {
     */  
     private void addPrimaryKeys ( univ, inputFile ) {
         def index = [TABLE_CAT:0,TABLE_SCHEM:1,TABLE_NAME:2,COLUMN_NAME:3]
-        println "index=$index"  
         boolean isFirstLine = true
         inputFile.eachLine { x ->
             if (isFirstLine) {
@@ -94,11 +93,10 @@ class Db2ModelGeneratorService {
 
 
             // store
-            // FIXME remove println, uncomment isPrimary
-            // println "Not adding primary key schema=$schema, table=$table, column=$column"
+            // FIXME uncomment isPrimary
             // univ[schema][table][column].isPrimary = true
         }
-        println "Not adding primary keys"
+        log.warn 'Not adding primary keys'
     }
 
     /**
