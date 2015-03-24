@@ -1,0 +1,17 @@
+<plugin name='uml-class-diagram' version='0.4.0' grailsVersion='2.0 &gt; *'>
+  <author>Igor Rosenberg</author>
+  <title>UML Class Diagram Plugin</title>
+  <description>Generate UML class diagrams from your Grails app source code.</description>
+  <documentation>http://igorrosenberg.github.io/grails-plugin-uml-class-diagram/</documentation>
+  <type>UmlClassDiagramGrailsPlugin</type>
+  <resources>
+    <resource>grails.plugin.umlclassdiagram.UmlController</resource>
+    <resource>grails.plugin.umlclassdiagram.PlantUmlService</resource>
+    <resource>grails.plugin.umlclassdiagram.UmlService</resource>
+    <resource>grails.plugin.umlclassdiagram.generator.Db2ModelGeneratorService</resource>
+    <resource>grails.plugin.umlclassdiagram.generator.DomainModelGeneratorService</resource>
+    <resource>grails.plugin.umlclassdiagram.generator.GrailsArtefactGeneratorService</resource>
+    <resource>grails.plugin.umlclassdiagram.generator.LayersModelGeneratorService</resource>
+    <resource>grails.plugin.umlclassdiagram.generator.ModelGeneratorService</resource>
+  </resources>
+</plugin>
