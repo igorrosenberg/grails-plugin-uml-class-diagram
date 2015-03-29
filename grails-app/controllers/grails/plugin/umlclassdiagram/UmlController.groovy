@@ -1,5 +1,7 @@
 package grails.plugin.umlclassdiagram
 
+import grails.validation.Validateable
+
 class UmlController {
 
     def umlService
@@ -22,6 +24,8 @@ class UmlController {
             return
         }
 
+        extraBindData(configurationCommandInstance, params)        
+
         if (configurationCommandInstance.hasErrors()) {
             respond configurationCommandInstance.errors, view: 'index'
             return
@@ -38,11 +42,29 @@ class UmlController {
         render file: stream, contentType: 'image/svg+xml', filename:'uml.svg' //'image/png'
     }
 
+
+    def grailsApplication
+    
+    /**
+     * Mitigation for issue #7, and GRAILS-5582
+     * @see https://github.com/igorrosenberg/grails-plugin-uml-class-diagram/issues/7
+     * @see https://jira.grails.org/browse/GRAILS-5582, fixed in grails 2.3 
+     */ 
+    private void extraBindData(configurationCommandInstance, params) {
+        def version = grailsApplication.metadata['app.grails.version'].split('\\.') 
+        if (version[0].toInteger() < 3 && version[1].toInteger() < 3 ) 
+          "packageFilter,classFilter,fieldFilter,linkFilter".split(',').each {
+            configurationCommandInstance[it] = new ConfigurationFilterCommand()
+            bindData(configurationCommandInstance[it], params[it])
+          }
+        }
+
 }
 
 /**
  * Command sub-object for Configuration options
  */
+@Validateable
 class ConfigurationFilterCommand {
     /** Filters restricting the visibility */
     String[] regexps = new String[0]
@@ -74,6 +96,7 @@ class ConfigurationFilterCommand {
 /**
  * Command object for Configuration options
  */
+@Validateable
 class ConfigurationCommand {
 
     /** Visibility of packages */
