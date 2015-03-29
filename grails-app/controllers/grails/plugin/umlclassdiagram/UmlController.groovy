@@ -54,7 +54,7 @@ class UmlController {
      */ 
     private void extraBindData(configurationCommandInstance, params) {
         def version = grailsApplication.metadata['app.grails.version'].split('\\.') 
-        if (version[0].toInteger() < 3 && version[1].toInteger() < 3 ) 
+        if (version[0].toInteger() < 2 || (version[0].toInteger() == 2 && version[1].toInteger() < 3 )) 
           "packageFilter,classFilter,fieldFilter,linkFilter".split(',').each {
             configurationCommandInstance[it] = new ConfigurationFilterCommand()
             bindData(configurationCommandInstance[it], params[it])
