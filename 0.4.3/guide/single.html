@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <title>UML Class Diagram Plugin DEV</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
+        <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
+    <script type="text/javascript">
+function addJsClass(el) {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+    </head>
+
+    <body class="body" onload="addJsClass();">
+        <div id="navigation">
+            <ul>
+                <li>
+                    <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                        <a href="../guide/index.html" class="button">Table of contents</a>
+                        <div id="nav-summary-childs" style="display:none;">
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#1.%20Introduction"><strong>1</strong><span>Introduction</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#2.%20Offline"><strong>2</strong><span>Offline</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#3.%20Online"><strong>3</strong><span>Online</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#4.%20Configuration"><strong>4</strong><span>Configuration</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#5.%20Example%20output"><strong>5</strong><span>Example output</span></a></div>
+                            
+                        </div>
+                    </div>
+                </li>
+                <li class="separator selected">
+                    <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+                </li>
+            </ul>
+        </div>
+        <div id="header">
+            <div class="images clearfix">
+                
+                
+            </div>
+            <p>Generate UML class diagrams from your Grails app source code.</p>
+        </div>
+
+
+        <table id="colset" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td id="col1">
+                    <div id="main" class="corner-all">
+
+                        <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                        <div class="project">
+                            <h1>UML Class Diagram Plugin - Reference Documentation</h1>
+                            <p><strong>Authors:</strong> Igor Rosenberg</p>
+                            <p><strong>Version:</strong> DEV</p>
+                            
+                        </div>
+
+                        
+                        <div id="table-of-content">
+                            <h2>Table of Contents</h2>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#1.%20Introduction"><strong>1</strong><span>Introduction</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#2.%20Offline"><strong>2</strong><span>Offline</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#3.%20Online"><strong>3</strong><span>Online</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#4.%20Configuration"><strong>4</strong><span>Configuration</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#5.%20Example%20output"><strong>5</strong><span>Example output</span></a></div>
+                            
+                            <div style="clear:both" ></div>
+                        </div>
+                        
+                        
+
+<h1 id="1. Introduction">1 Introduction</h1>
+The <a href="http://grails.org/plugin/uml-class-diagram" target="blank">uml-class-diagram grails plugin</a> generates UML diagrams from the Grails application source code.<p class="paragraph"/>Rendering is done via the integrated <a href="http://plantuml.sourceforge.net/" target="blank">plantUML</a> library (possibly without sending data on the internet).<p class="paragraph"/>The diagrams can be generated before runtime 
+<div class="code"><pre>grails uml&#45;class&#45;diagram</pre></div><p class="paragraph"/>Or when the webapp is running
+<div class="code"><pre>http://server:port/webapp/uml</pre></div><p class="paragraph"/>The data shown in the UML class diagrams is configurable.<p class="paragraph"/>The plugin is released under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html" target="blank">Apache License 2.0</a> license, is <a href="http://grails.org/plugin/uml-class-diagram/," target="blank">publicly available</a> and the source code is <a href="https://github.com/igorrosenberg/grails-plugin-uml-class-diagram/" target="blank">available on GitHub</a> .<p class="paragraph"/>
+
+
+
+<h1 id="2. Offline">2 Offline</h1>
+The UML diagrams can be generated before runtime 
+<div class="code"><pre>grails uml&#45;class&#45;diagram</pre></div><p class="paragraph"/><strong class="bold">Warning</strong>! The configuration described below is not implemented!<p class="paragraph"/>You may add parameters on the command line, or set your preferred default in Config.groovy
+<div class="code"><pre>grails.plugin.'uml&#45;class&#45;diagram'.fieldFilterRegexps=&#91;'^id$','^version$'&#93;
+grails.plugin.'uml&#45;class&#45;diagram'.classFilterRegexps=&#91;'.&#42;City'&#93;,
+grails.plugin.'uml&#45;class&#45;diagram'.diagramType='DOMAIN',
+grails.plugin.'uml&#45;class&#45;diagram'.showCanonicalJavaClassNames=<span class="java&#45;keyword">false</span></pre></div><p class="paragraph"/>
+
+
+<h1 id="3. Online">3 Online</h1>
+When the webapp is running, the UML diagrams are exposed through the following URL:
+<div class="code"><pre>http://server:port/webapp/uml</pre></div><p class="paragraph"/><h3>HTML Form</h3><p class="paragraph"/>The diagram data may be configured through an HTML form, reachable through the previous URL.<p class="paragraph"/><img border="0" class="center" src="../img/0.4.3-wizard.png"></img><p class="paragraph"/>Submitting the form will redirect to the requested rendering result, 
+an SVG image as rendered by <a href="http://plantuml.sourceforge.net/" target="blank">plantUML</a><p class="paragraph"/><h3>HTTP access</h3><p class="paragraph"/>The diagrams are also available without using the online form, by simply 
+executing an HTTP POST request on the 'draw' controller action, for example:<p class="paragraph"/><div class="code"><pre>curl &#45;v &#45;H <span class="java&#45;quote">"Content&#45;Type: application/json"</span> &#45;d '&#123;
+  <span class="java&#45;quote">"fieldFilter"</span>=&#123;<span class="java&#45;quote">"inclusion"</span>=<span class="java&#45;quote">"<span class="java&#45;keyword">false</span>"</span>,<span class="java&#45;quote">"regexps"</span>=&#91;<span class="java&#45;quote">"^id$"</span>,<span class="java&#45;quote">"^version$"</span>&#93;&#125;,
+  <span class="java&#45;quote">"classFilter"</span>=&#123;<span class="java&#45;quote">"inclusion"</span>=<span class="java&#45;quote">"<span class="java&#45;keyword">true</span>"</span>,<span class="java&#45;quote">"regexps"</span>=&#91;<span class="java&#45;quote">"Race"</span>&#93;&#125;,
+  <span class="java&#45;quote">"diagramType"</span>=<span class="java&#45;quote">"DOMAIN"</span>,
+  <span class="java&#45;quote">"showCanonicalJavaClassNames"</span>=<span class="java&#45;quote">"<span class="java&#45;keyword">false</span>"</span>
+&#125;' http://server:port/webapp/uml/draw</pre></div><p class="paragraph"/>
+
+
+<h1 id="4. Configuration">4 Configuration</h1>
+The data shown in the UML class diagrams is configurable, the complete list of options 
+being exposed in the source code by the object called ConfigurationCommand.<p class="paragraph"/><h3>Configuration options (ConfigurationCommand object)</h3><p class="paragraph"/>A ConfigurationFilterCommand represents a list of String filters
+(interpreted as regular expressions). An inclusive ConfigurationFilterCommand
+will show all Strings matching at least one of the regexps, whereas 
+an exclusive ConfigurationFilterCommand will keep all Strings matching none of the regexps.
+<ul class="star">
+<li><code>packageFilter</code>: ConfigurationFilterCommand restricting the visibility of packages</li>
+<li><code>classFilter</code>: ConfigurationFilterCommand restricting the visibility of classes</li>
+<li><code>fieldFilter</code>: ConfigurationFilterCommand restricting the visibility of fields</li>
+<li><code>linkFilter</code>: ConfigurationFilterCommand restricting the visibility of links between classes</li>
+<li><code>diagramType</code>:</li>
+<ul class="star">
+<li>'DOMAIN', uml class diagrams of the Grails Domain objects</li>
+<li>'LAYERS', uml class diagrams of the Grails Controllers and Services</li>
+<li>'DB2', uml class diagrams of DB2 schema data. See detail in next section</li>
+</ul></ul><p class="paragraph"/>More options are available, but they change nothing in the output (currently not implemented):
+<ul class="star">
+<li>-<code>showCanonicalJavaClassNames</code>-: boolean, removing the package prefix to Java classes (from the java API)</li>
+<li>-<code>showGrailsInternalClasses</code>-: boolean, removing Controllers and Services provided by the Grails framework</li>
+<li>-<code>filterGrailsFields</code>-: boolean</li>
+</ul><p class="paragraph"/><h3>DB2 specific options</h3><p class="paragraph"/>
+Using <code>diagramType</code>='DB2' means you want to infer class diagrams from the output of a DB2 schema dump.
+The tables are simple dumps of specific system tables of the database.
+You should configure the following variables in <code>Config.groovy</code>:
+<ul class="star">
+<li><code>sqlDataFiles.tables</code> : the path to a file containing the result of</li>
+</ul><p class="paragraph"/>  SELECT * FROM syscat.columns
+ <div class="code"><pre>TABSCHEMA	TABNAME	COLNAME	COLNO	TYPESCHEMA	TYPENAME	LENGTH	SCALE	DEFAULT	NULLS	CODEPAGE	&#92;&#92;
+  COLLATIONSCHEMA	COLLATIONNAME	LOGGED	COMPACT	COLCARD	HIGH2KEY	LOW2KEY	AVGCOLLEN	KEYSEQ	&#92;&#92;
+  PARTKEYSEQ	NQUANTILES	NMOSTFREQ	NUMNULLS	TARGET_TYPESCHEMA	TARGET_TYPENAME	SCOPE_TABSCHEMA	&#92;&#92;
+  SCOPE_TABNAME	SOURCE_TABSCHEMA	SOURCE_TABNAME	DL_FEATURES	SPECIAL_PROPS	HIDDEN		&#92;&#92;
+  INLINE_LENGTH	PCTINLINED	IDENTITY	ROWCHANGETIMESTAMP	GENERATED	TEXT	COMPRESS		&#92;&#92;
+  AVGDISTINCTPERPAGE	PAGEVARIANCERATIO	SUB_COUNT	SUB_DELIM_LENGTH	AVGCOLLENCHAR		&#92;&#92;
+  IMPLICITVALUE	SECLABELNAME	REMARKS</pre></div> 
+<ul class="minus">
+<li><code>sqlDataFiles.foreignKeys</code>: the path to a file containing the result of</li>
+</ul><p class="paragraph"/><code>SELECT * FROM syscat.references</code>
+<div class="code"><pre>CONSTNAME	TABSCHEMA	TABNAME	OWNER	OWNERTYPE	REFKEYNAME	REFTABSCHEMA	REFTABNAME			&#92;&#92;
+  COLCOUNT	DELETERULE	UPDATERULE	CREATE_TIME	FK_COLNAMES	PK_COLNAMES	DEFINER</pre></div>
+<ul class="star">
+<li>-<code>sqlDataFiles.primaryKeys</code>-: (currently not implemented) the path to a file containing the result of</li>
+</ul><p class="paragraph"/><code>SELECT * FROM sysibm."SQLPRIMARYKEYS"</code>
+<div class="code"><pre>TABLE_CAT	TABLE_SCHEM	TABLE_NAME	COLUMN_NAME	KEY_SEQ	PK_NAME</pre></div><p class="paragraph"/>
+
+
+<h1 id="5. Example output">5 Example output</h1>
+<h3>Domain classes for a trivial application</h3><p class="paragraph"/><img border="0" class="center" src="../img/0.4.3-domain.png"></img><p class="paragraph"/><h3>Controller/Service relations within the UmlClassDiagram plugin itself</h3><p class="paragraph"/><img border="0" class="center" src="../img/0.4.3-layers.png"></img><p class="paragraph"/>
+
+
+                    </div>
+                </td>
+                <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+            </tr>
+        </table>
+
+        <div id="footer">
+            
+            Developed by <a href='http://igor.rosenberg.free.fr/'>Igor Rosenberg</a>.
+        </div>
+
+
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+    </body>
+</html>
