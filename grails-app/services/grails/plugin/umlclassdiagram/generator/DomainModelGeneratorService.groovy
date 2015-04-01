@@ -33,7 +33,7 @@ class DomainModelGeneratorService extends GrailsArtefactGeneratorService {
         def instance = new DefaultGrailsDomainClass(c)
         [
                 packageName : model.packageName,
-                className   : model.fullName,
+                className   : model.name,
                 properties  : propertiesToSpec(instance.getProperties()),
                 associations: associationsToSpec(model.packageName, model.fullName, instance.getAssociations()),
         ]
