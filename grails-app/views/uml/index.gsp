@@ -22,6 +22,7 @@
 			<g:form action="draw" method="get">
 				<g:render template="form"/>
 				<fieldset class="buttons">
+                    <a href="http://igorrosenberg.github.io/grails-plugin-uml-class-diagram/0.4.3/guide/4.%20Configuration.html">Read the docs</a>
 					<g:submitButton name="draw" class="save" 
 					      value="${message(code: 'default.button.create.label', default: 'Draw')}" />
 				</fieldset>
