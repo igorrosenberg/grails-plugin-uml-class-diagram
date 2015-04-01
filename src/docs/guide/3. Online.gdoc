@@ -7,20 +7,20 @@ h3. HTML Form
 
 The diagram data may be configured through an HTML form, reachable through the previous URL.
 
-!0.3.2-wizard.png!
+!0.4.3-wizard.png!
 
 Submitting the form will redirect to the requested rendering result, 
-in the default case an image as rendered by "plantUML":http://plantuml.sourceforge.net/ 
+an SVG image as rendered by "plantUML":http://plantuml.sourceforge.net/ 
 
 h3. HTTP access
 
-The diagrams are also available without using the online form, 
-by simply executing an HTTP POST request on the 'draw' controller action, for example:
+The diagrams are also available without using the online form, by simply 
+executing an HTTP POST request on the 'draw' controller action, for example:
 
 {code}
 curl -v -H "Content-Type: application/json" -d '{
-  "fieldFilterRegexps"=["^id$","^version$"],
-  "classFilterRegexps"=[".*City"],
+  "fieldFilter"={"inclusion"="false","regexps"=["^id$","^version$"]},
+  "classFilter"={"inclusion"="true","regexps"=["Race"]},
   "diagramType"="DOMAIN",
   "showCanonicalJavaClassNames"="false"
 }' http://server:port/webapp/uml/draw
