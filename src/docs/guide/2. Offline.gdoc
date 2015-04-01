@@ -3,6 +3,8 @@ The UML diagrams can be generated before runtime
 grails uml-class-diagram
 {code}
 
+*Warning*! The configuration described below is not implemented!
+
 You may add parameters on the command line, or set your preferred default in Config.groovy
 {code}
 grails.plugin.'uml-class-diagram'.fieldFilterRegexps=['^id$','^version$']

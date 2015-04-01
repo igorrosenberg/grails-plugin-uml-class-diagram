@@ -1,15 +1,60 @@
 The data shown in the UML class diagrams is configurable, the complete list of options 
-being exposed by the ConfigurationCommand object.
+being exposed in the source code by the command objects.
 
-h3. Configuration options
+h3. Configuration options (Command objects)
 
-* @fieldFilterRegexps@: a list of String filters (interpreted as regular expressions) restricting the visibility of fields within classes, for example '^id$'
-* @classFilterRegexps@: a list of String filters (interpreted as regular expressions) restricting the visibility of classes, for example '.*Race'
-* @showCanonicalJavaClassNames@: boolean, removing the package prefix to Java classes (from the java API) 
-* @showGrailsInternalClasses@: boolean, removing Controllers and Services provided by the Grails framework
-* @filterGrailsFields@: boolean
-* @diagramType@: either 'DOMAIN' (uml class diagrams of the Grails Domain objects) or 'LAYERS' (uml class diagrams of the Grails Controllers and Services)
-* @renderingEngine@: 
-** either 'LOCAL_PLANT_UML' (generate diagrams via embeded plantUML JAR), 
-** or 'WEB_PLANT_UML'  (generate diagrams via online plantUML service)
+A ConfigurationFilterCommand:../gapi/grails/plugin/umlclassdiagram/ConfigurationFilterCommand.html represents a list of String filters
+(interpreted as regular expressions). An inclusive ConfigurationFilterCommand:../gapi/grails/plugin/umlclassdiagram/ConfigurationFilterCommand.html
+will show all Strings matching at least one of the regexps, whereas 
+an exclusive ConfigurationFilterCommand:../gapi/grails/plugin/umlclassdiagram/ConfigurationFilterCommand.html will keep all Strings matching none of the regexps.
+
+A ConfigurationCommand:../gapi/grails/plugin/umlclassdiagram/ConfigurationCommand.html contains filters and some other properties: 
+
+
+* @packageFilter@: ConfigurationFilterCommand restricting the visibility of packages
+* @classFilter@: ConfigurationFilterCommand restricting the visibility of classes
+* @fieldFilter@: ConfigurationFilterCommand restricting the visibility of fields
+* @linkFilter@: ConfigurationFilterCommand restricting the visibility of links between classes
+* @diagramType@: 
+** 'DOMAIN', uml class diagrams of the Grails Domain objects 
+** 'LAYERS', uml class diagrams of the Grails Controllers and Services
+** 'DB2', uml class diagrams of DB2 schema data. See detail in next section
+
+More options are available, but they change nothing in the output (currently not implemented):
+
+* -@showCanonicalJavaClassNames@-: boolean, removing the package prefix to Java classes (from the java API) 
+* -@showGrailsInternalClasses@-: boolean, removing Controllers and Services provided by the Grails framework
+* -@filterGrailsFields@-: boolean
+
+h3. DB2 specific options
+
+
+Using @diagramType@='DB2' means you want to infer class diagrams from the output of a DB2 schema dump.
+The data comes from specific system tables of the DB2 database.
+You should configure the following variables in @Config.groovy@:
+
+* @sqlDataFiles.tables@ : the path to a file containing the result of
+  SELECT * FROM syscat.columns
+ {code} 
+  TABSCHEMA	TABNAME	COLNAME	COLNO	TYPESCHEMA	TYPENAME	LENGTH	SCALE	DEFAULT	NULLS	CODEPAGE	\\
+  COLLATIONSCHEMA	COLLATIONNAME	LOGGED	COMPACT	COLCARD	HIGH2KEY	LOW2KEY	AVGCOLLEN	KEYSEQ	\\
+  PARTKEYSEQ	NQUANTILES	NMOSTFREQ	NUMNULLS	TARGET_TYPESCHEMA	TARGET_TYPENAME	SCOPE_TABSCHEMA	\\
+  SCOPE_TABNAME	SOURCE_TABSCHEMA	SOURCE_TABNAME	DL_FEATURES	SPECIAL_PROPS	HIDDEN		\\
+  INLINE_LENGTH	PCTINLINED	IDENTITY	ROWCHANGETIMESTAMP	GENERATED	TEXT	COMPRESS		\\
+  AVGDISTINCTPERPAGE	PAGEVARIANCERATIO	SUB_COUNT	SUB_DELIM_LENGTH	AVGCOLLENCHAR		\\
+  IMPLICITVALUE	SECLABELNAME	REMARKS
+ {code} 
+
+- @sqlDataFiles.foreignKeys@: the path to a file containing the result of
+@SELECT * FROM syscat.references@
+{code}
+  CONSTNAME	TABSCHEMA	TABNAME	OWNER	OWNERTYPE	REFKEYNAME	REFTABSCHEMA	REFTABNAME			\\
+  COLCOUNT	DELETERULE	UPDATERULE	CREATE_TIME	FK_COLNAMES	PK_COLNAMES	DEFINER
+{code}
+
+* -@sqlDataFiles.primaryKeys@-: (currently not implemented) the path to a file containing the result of  
+@SELECT * FROM sysibm."SQLPRIMARYKEYS"@
+{code}
+  TABLE_CAT	TABLE_SCHEM	TABLE_NAME	COLUMN_NAME	KEY_SEQ	PK_NAME
+{code}
 
