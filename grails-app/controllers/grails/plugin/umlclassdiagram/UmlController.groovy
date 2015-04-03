@@ -43,19 +43,18 @@ class UmlController {
             return
         }
 
-        if (params.onlyText) {
-            render text: umlService.plantUmlString(configurationCommandInstance), contentType: "text/plain"
-            return
+        if (params.scriptButton) {
+            def umlString = umlService.plantUmlString(configurationCommandInstance)
+            render(view: 'script', model: [uml: umlString])
+        } else {
+            def stream = umlService.localPlantUml(configurationCommandInstance)
+            log.info 'Image byte stream sent to user'
+            response.contentType = 'image/svg+xml;charset=utf-8'
+            response.addHeader('Content-Disposition', 'attachment; filename="uml.svg"');
+            response.addHeader('Vary', 'Accept-Encoding');
+            response.outputStream << stream
         }
-
-        def stream = umlService.localPlantUml(configurationCommandInstance)
-        log.info 'Image byte stream sent to user'
-        response.contentType = 'image/svg+xml;charset=utf-8'
-        response.addHeader('Content-Disposition', 'attachment; filename="uml.svg"');
-        response.addHeader('Vary', 'Accept-Encoding');
-        response.outputStream << stream
     }
-
 
     def grailsApplication
 
