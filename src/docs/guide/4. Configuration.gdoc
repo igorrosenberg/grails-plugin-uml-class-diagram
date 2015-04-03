@@ -3,12 +3,12 @@ being exposed in the source code by the command objects.
 
 h3. Configuration options (Command objects)
 
-A ConfigurationFilterCommand:../gapi/grails/plugin/umlclassdiagram/ConfigurationFilterCommand.html represents a list of String filters
-(interpreted as regular expressions). An inclusive ConfigurationFilterCommand:../gapi/grails/plugin/umlclassdiagram/ConfigurationFilterCommand.html
+A [ConfigurationFilterCommand|api:grails.plugin.umlclassdiagram.ConfigurationFilterCommand] represents a list of String filters
+(interpreted as regular expressions). An inclusive ConfigurationFilterCommand
 will show all Strings matching at least one of the regexps, whereas 
-an exclusive ConfigurationFilterCommand:../gapi/grails/plugin/umlclassdiagram/ConfigurationFilterCommand.html will keep all Strings matching none of the regexps.
+an exclusive ConfigurationFilterCommand will keep all Strings matching none of the regexps.
 
-A ConfigurationCommand:../gapi/grails/plugin/umlclassdiagram/ConfigurationCommand.html contains filters and some other properties: 
+A [ConfigurationCommand|api:grails.plugin.umlclassdiagram.ConfigurationCommand] is a wrapper, containing filters and some other properties: 
 
 
 * @packageFilter@: ConfigurationFilterCommand restricting the visibility of packages
@@ -20,11 +20,37 @@ A ConfigurationCommand:../gapi/grails/plugin/umlclassdiagram/ConfigurationComman
 ** 'LAYERS', uml class diagrams of the Grails Controllers and Services
 ** 'DB2', uml class diagrams of DB2 schema data. See detail in next section
 
+{warning}
 More options are available, but they change nothing in the output (currently not implemented):
+{warning}
 
-* -@showCanonicalJavaClassNames@-: boolean, removing the package prefix to Java classes (from the java API) 
-* -@showGrailsInternalClasses@-: boolean, removing Controllers and Services provided by the Grails framework
-* -@filterGrailsFields@-: boolean
+* -@showCanonicalJavaClassNames@- : boolean, removing the package prefix to Java classes (from the java API) 
+* -@showGrailsInternalClasses@- : boolean, removing Controllers and Services provided by the Grails framework
+* -@filterGrailsFields@- : boolean
+
+h3. Example filters
+
+* _package include ^com.example_
+Include all classes from the package @com.example@ and its children
+As a side effect of links not being filtered by this filter, all classes which have an ingoing 
+or outgoing link will be rendered anyway, but with no field data.
+   
+* _class exclude .*Race_
+Exclude all classes which end in @Race@ 
+As a side effect of links not being filtered by this filter, any class ending in @Race@ 
+which has an ingoing or outgoing link will still be displayed, without field data. 
+
+* _field exclude ^id$_ && _field exclude ^version$_
+Exclude default grails domain fields.
+
+* _links exclude ^com.example_
+Exclude links for any classes within @com.example@ and its children.
+That will exclude all links inside, going into, or going out, of said packages.
+
+* _package include test.app_  &&  _class include Race|Runner_   && _links include test.app.(Race|Runner).*test.app.(Race|Runner)_
+Show only the classes @com.example.Race@ and @com.example.Runner@, and only show the links between these 2 classes.
+This will exclude all classes within other packages, and all classes not called Race or Runner.
+
 
 h3. DB2 specific options
 

@@ -3,7 +3,9 @@ The UML diagrams can be generated before runtime
 grails uml-class-diagram
 {code}
 
-*Warning*! The configuration described below is not implemented!
+{warning}
+The configuration described below is not implemented!
+{warning}
 
 You may add parameters on the command line, or set your preferred default in Config.groovy
 {code}
