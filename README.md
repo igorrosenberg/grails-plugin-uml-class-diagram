@@ -11,11 +11,11 @@ Documentation:
 
 ## Screenshots
 
-![Wizard example](src/docs/images/0.3.2-wizard.png)
+![Wizard example](src/docs/images/0.4.3-wizard.png)
 
-![Domain example](src/docs/images/0.2.5-domain.png)
+![Domain example](src/docs/images/0.4.3-domain.png)
 
-![Layers example](src/docs/images/0.2.5-layers.png)
+![Layers example](src/docs/images/0.4.3-layers.png)
 
 ## Usage
 
