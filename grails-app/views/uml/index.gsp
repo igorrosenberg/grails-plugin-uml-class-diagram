@@ -19,11 +19,15 @@
 				  </g:eachError>
 			  </ul>
 			</g:hasErrors>
-			<g:form action="draw" method="get">
+			<g:form method="get">
 				<g:render template="form"/>
 				<fieldset class="buttons">
-					<g:submitButton name="draw" class="save" 
-					      value="${message(code: 'default.button.create.label', default: 'Draw')}" />
+           <a href="http://igorrosenberg.github.io/grails-plugin-uml-cl
+ass-diagram/${pluginVersion}/guide/4.%20Configuration.html">Help</a>
+                    <g:submitButton name="Script" class="save" action="script"
+                                    value="${message(code: 'default.button.script.label', default: 'Script')}" />
+                    <g:submitButton name="Draw" class="save" action="draw"
+                                    value="${message(code: 'default.button.create.label', default: 'Draw')}" />
 				</fieldset>
 			</g:form>
 		</div>

@@ -9,8 +9,20 @@ class UmlController {
     def index() {
         def instance = new ConfigurationCommand()
         bindData(instance, params)
-        render(view: 'index', model: [configurationCommandInstance: instance])
+        render(view: 'index', model: [configurationCommandInstance: instance, pluginVersion: pluginVersion])
     }
+
+    /**
+     * @return the version of the UML Class Diagram plugin.
+     */
+    private getPluginVersion() {
+        def pluginList = grailsApplication.mainContext.getBean('pluginManager').allPlugins
+        def umlPlugin = pluginList.find { plugin ->
+            plugin.name == 'umlClassDiagram'
+        }
+        umlPlugin?.version
+    }
+
 
     def draw(ConfigurationCommand configurationCommandInstance) {
         if (configurationCommandInstance == null) {
@@ -24,7 +36,7 @@ class UmlController {
             return
         }
 
-        extraBindData(configurationCommandInstance, params)        
+        extraBindData(configurationCommandInstance, params)
 
         if (configurationCommandInstance.hasErrors()) {
             respond configurationCommandInstance.errors, view: 'index'
@@ -46,20 +58,20 @@ class UmlController {
 
 
     def grailsApplication
-    
+
     /**
      * Mitigation for issue #7, and GRAILS-5582
      * @see https://github.com/igorrosenberg/grails-plugin-uml-class-diagram/issues/7
      * @see https://jira.grails.org/browse/GRAILS-5582, fixed in grails 2.3 
-     */ 
+     */
     private void extraBindData(configurationCommandInstance, params) {
-        def version = grailsApplication.metadata['app.grails.version'].split('\\.') 
-        if (version[0].toInteger() < 2 || (version[0].toInteger() == 2 && version[1].toInteger() < 3 )) 
-          "packageFilter,classFilter,fieldFilter,linkFilter".split(',').each {
-            configurationCommandInstance[it] = new ConfigurationFilterCommand()
-            bindData(configurationCommandInstance[it], params[it])
-          }
-        }
+        def version = grailsApplication.metadata['app.grails.version'].split('\\.')
+        if (version[0].toInteger() < 2 || (version[0].toInteger() == 2 && version[1].toInteger() < 3))
+            "packageFilter,classFilter,fieldFilter,linkFilter".split(',').each {
+                configurationCommandInstance[it] = new ConfigurationFilterCommand()
+                bindData(configurationCommandInstance[it], params[it])
+            }
+    }
 
 }
 
