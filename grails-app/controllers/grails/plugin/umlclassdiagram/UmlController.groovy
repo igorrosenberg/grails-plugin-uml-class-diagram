@@ -142,6 +142,5 @@ class ConfigurationCommand {
 }
 
 enum DiagramType {
-    DOMAIN, LAYERS, DB2
+    DB2, DOMAIN, LAYERS
 }
-
