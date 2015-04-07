@@ -1,5 +1,5 @@
 class UmlClassDiagramGrailsPlugin {
-    def version = "DEV"
+    def version = "0.4.4"
     def grailsVersion = "2.0 > *"
     def title = "UML Class Diagram Plugin"
     def author = "Igor Rosenberg"
