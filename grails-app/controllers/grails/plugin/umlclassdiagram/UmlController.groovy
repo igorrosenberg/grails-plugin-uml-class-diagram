@@ -79,9 +79,9 @@ class UmlController {
  */
 @Validateable
 class ConfigurationFilterCommand {
-    /** Filters restricting the visibility */
+    /** Filters (regular expressions) restricting the visibility. */
     String[] regexps = new String[0]
-    /** true => include specified regexp; false => exclude specified regexp */
+    /** true => include specified regexp; false => exclude specified regexp. */
     boolean inclusion
 
     static constraints = {
