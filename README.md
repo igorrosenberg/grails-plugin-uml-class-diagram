@@ -93,6 +93,9 @@ See the [User Guide](http://igorrosenberg.github.io/grails-plugin-uml-class-diag
 
 Add `runtime ":uml-class-diagram:0.4.0"` to *BuildConfig.groovy* in the plugins section (requires grails 2.0 > \*).
 
+The plugin depends on GraphViz. You may install it through your favorite package manager 
+or via [http://www.graphviz.org/Download.php](http://www.graphviz.org/Download.php).
+
 ## Development
 
 The steps described below are available in a [dedicated test app](https://github.com/igorrosenberg/test-grails-app/tree/local-uml-plugin)
