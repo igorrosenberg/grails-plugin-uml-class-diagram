@@ -8,7 +8,7 @@ Documentation:
 * [User Guide](http://igorrosenberg.github.io/grails-plugin-uml-class-diagram/)
 * [Plugin shared with the Grails Community](http://grails.org/plugin/uml-class-diagram) 
 * [Source code on GitHub](https://github.com/igorrosenberg/grails-plugin-uml-class-diagram/) (this page) 
-* [Changelog](blob/master/changelog.md)
+* [Changelog](changelog.md)
 
 ## Screenshots
 
