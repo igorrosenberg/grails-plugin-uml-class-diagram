@@ -1,0 +1,19 @@
+
+{warning}
+The functionality described below is no longer implemented in the grails 3.x line!
+{warning}
+
+The UML diagrams can be generated before runtime 
+{code}
+grails uml-class-diagram
+{code}
+
+
+You may add parameters on the command line, or set your preferred default in application.yml
+{code}
+grails.plugin.'uml-class-diagram'.fieldFilterRegexps=['^id$','^version$']
+grails.plugin.'uml-class-diagram'.classFilterRegexps=['.*City'],
+grails.plugin.'uml-class-diagram'.diagramType='DOMAIN',
+grails.plugin.'uml-class-diagram'.showCanonicalJavaClassNames=false
+{code}
+

@@ -1,0 +1,26 @@
+h3. Access
+
+When the webapp is running, the UML diagrams are exposed through the following URL:
+{code}
+http://server:port/uml
+{code}
+
+h3. Configuration
+
+The previous URL offers an HTML form:
+
+!0.4.3-wizard.png!
+
+h3. HTTP access
+
+The diagrams are also available by simply 
+executing an HTTP POST request on the 'draw' controller action, for example:
+
+{code}
+curl -v -H "Content-Type: application/json" -d '{
+  "fieldFilter"={"inclusion"="false","regexps"=["^id$","^version$"]},
+  "classFilter"={"inclusion"="true","regexps"=["Race"]},
+  "diagramType"="DOMAIN",
+  "showCanonicalJavaClassNames"="false"
+}' http://server:port/webapp/draw
+{code}

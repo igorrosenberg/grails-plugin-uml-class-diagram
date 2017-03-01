@@ -2,7 +2,10 @@
 /target
 grails-uml-class-diagram-*.zip
 grails-uml-class-diagram-*.zip.sha1
-plugin.xml
+uml-class-diagram-*.zip
+uml-class-diagram-*.zip.sha1
 web-app/WEB-INF
 plugin.xml
 application.properties
+/build
+/.gradle

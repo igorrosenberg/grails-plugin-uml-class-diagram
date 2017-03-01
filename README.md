@@ -33,7 +33,9 @@ Documentation:
   1. :no_entry: (Out of the scope of this plugin, see instead [swagger](http://swagger.io/)) ~~Document specifically webapp interfaces (public methods of Controllers, with javadoc, input/output spec?)~~ 
   1. :no_entry: (No longer considered useful) ~~Diagram generation using online [PlantUML server](http://www.plantuml.com/plantuml)~~ 
   1. :no_entry: (No longer considered useful) ~~Diagram generation using online [yUML](http://www.yuml.me/diagram/scruffy/class/draw)~~
-
+  1. :white_check_mark: Works with Grails 2.x, see version 0.4.4 or 64aa962 
+  1. :clock9: Works with Grails 3.x, see version 0.7 which applied http://docs.grails.org/3.2.x/guide/upgrading.html
+  
 ## Usage
 
 See the [User Guide](http://igorrosenberg.github.io/grails-plugin-uml-class-diagram/)
