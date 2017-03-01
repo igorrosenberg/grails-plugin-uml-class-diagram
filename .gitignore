@@ -1,0 +1,12 @@
+*.log
+/target
+grails-uml-class-diagram-*.zip
+grails-uml-class-diagram-*.zip.sha1
+uml-class-diagram-*.zip
+uml-class-diagram-*.zip.sha1
+plugin.xml
+web-app/WEB-INF
+plugin.xml
+application.properties
+/build
+/.gradle
