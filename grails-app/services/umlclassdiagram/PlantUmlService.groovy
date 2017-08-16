@@ -3,10 +3,13 @@ package umlclassdiagram
 import net.sourceforge.plantuml.*
 import com.nafiux.grails.classdomainuml.*
 import org.grails.core.DefaultGrailsDomainClass
+import groovy.util.logging.Slf4j
 
 /**
  * Generate diagrams from a Model.
  */
+
+@Slf4j
 class PlantUmlService {
 
     /*

@@ -3,6 +3,7 @@ package umlclassdiagram
 import grails.validation.Validateable
 import groovy.util.logging.Slf4j
 
+@Slf4j
 class UmlController {
 
     grails.core.GrailsApplication grailsApplication
@@ -10,7 +11,6 @@ class UmlController {
     def umlService
 
     def index() {
-	
         def instance = new ConfigurationCommand()
         bindData(instance, params)
         render(view: 'index', model: [configurationCommandInstance: instance, pluginVersion: pluginVersion])
@@ -63,11 +63,11 @@ class UmlController {
     /**
      * Mitigation for issue #7, and GRAILS-5582
      * @see https://github.com/igorrosenberg/grails-plugin-uml-class-diagram/issues/7
-     * @see https://jira.grails.org/browse/GRAILS-5582, fixed in grails 2.3 
+     * @see https://jira.grails.org/browse/GRAILS-5582, fixed in grails 2.3
      */
-    private void extraBindData(configurationCommandInstance, params) {		
+    private void extraBindData(configurationCommandInstance, params) {
         def oldVersion = grailsApplication.metadata['app.grails.version']
-		if (!oldVersion)	
+		if (!oldVersion)
 			return
 		def version = oldVersion.split('\\.')
         if (version[0].toInteger() < 2 || (version[0].toInteger() == 2 && version[1].toInteger() < 3))
