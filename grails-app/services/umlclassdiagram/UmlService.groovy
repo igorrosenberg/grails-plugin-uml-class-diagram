@@ -1,8 +1,12 @@
 package umlclassdiagram
 
+import groovy.util.logging.Slf4j
+
 /**
  * Generate UML diagrams (as images) from application structure.
  */
+
+@Slf4j
 class UmlService {
 
     def modelGeneratorService
@@ -29,5 +33,4 @@ class UmlService {
         def model = modelGeneratorService.makeModel(configurationCommand.diagramType)
         plantUmlService.modelToScript(model, configurationCommand)
     }
-
-}    
+}

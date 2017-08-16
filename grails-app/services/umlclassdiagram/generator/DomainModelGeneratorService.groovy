@@ -4,10 +4,13 @@ import static umlclassdiagram.Constants.*
 
 import com.nafiux.grails.classdomainuml.*
 import org.grails.core.DefaultGrailsDomainClass
+import groovy.util.logging.Slf4j
 
 /**
  * Generate UML diagrams from grails domains.
  */
+
+@Slf4j
 class DomainModelGeneratorService extends GrailsArtefactGeneratorService {
 
     def grailsApplication
@@ -30,7 +33,8 @@ class DomainModelGeneratorService extends GrailsArtefactGeneratorService {
         def c = grailsApplication.classLoader.loadClass("${model.fullName}")
         log.debug "Introspect artefact data for ${model.fullName}"
         // FIXME really need an object ? already got a class...
-        def instance = new DefaultGrailsDomainClass(c)
+        def instance = new DefaultGrailsDomainClass(c, grailsApplication.mappingContext)
+        instance.setGrailsApplication(grailsApplication)
         [
                 packageName : model.packageName,
                 className   : model.name,
@@ -47,7 +51,7 @@ class DomainModelGeneratorService extends GrailsArtefactGeneratorService {
         properties.collect {
             def name = it.getName()
             def type = it.getType().name
-            def ref = it.getReferencedPropertyType().name
+            def ref = it.getReferencedPropertyType()?.name
             if (ref == type) {
                 ref = null
             }

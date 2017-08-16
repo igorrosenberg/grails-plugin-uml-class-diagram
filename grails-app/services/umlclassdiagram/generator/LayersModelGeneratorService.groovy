@@ -1,7 +1,9 @@
 package umlclassdiagram.generator
 
 import static umlclassdiagram.Constants.*
+import groovy.util.logging.Slf4j
 
+@Slf4j
 class LayersModelGeneratorService extends GrailsArtefactGeneratorService {
 
     def grailsApplication
